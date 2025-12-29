@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://upalmee8y0v7"]
+
+[ext_resource type="PackedScene" uid="uid://5eguxhvy5hfk" path="res://scenes/suelo/suelo.tscn" id="1_e1xdh"]
+[ext_resource type="PackedScene" uid="uid://bdtfhmu4iri7d" path="res://scenes/jugador/jugador.tscn" id="2_aeo3s"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Suelo" parent="." instance=ExtResource("1_e1xdh")]
+
+[node name="CharacterBody2D" parent="." instance=ExtResource("2_aeo3s")]
