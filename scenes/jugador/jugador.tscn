@@ -9,11 +9,13 @@ size = Vector2(40, 67.25)
 script = ExtResource("1_02n2h")
 
 [node name="ColorRect" type="ColorRect" parent="."]
-offset_left = -292.0
-offset_top = 89.0
-offset_right = -252.0
-offset_bottom = 155.0
+offset_left = -502.0
+offset_top = 195.0
+offset_right = -462.0
+offset_bottom = 261.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-272, 122.375)
+position = Vector2(-482, 228.375)
 shape = SubResource("RectangleShape2D_8wb3s")
+
+[node name="Camera2D" type="Camera2D" parent="."]
