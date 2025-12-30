@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=4 uid="uid://bo6qsr3xp5wro"]
+[gd_scene load_steps=6 format=4 uid="uid://bo6qsr3xp5wro"]
 
-[ext_resource type="PackedScene" uid="uid://c8t72ifsktwrn" path="res://scenes/obstaculo/obstacle.tscn" id="2_qnah2"]
 [ext_resource type="PackedScene" uid="uid://5eguxhvy5hfk" path="res://scenes/suelo/suelo.tscn" id="2_uktl7"]
 [ext_resource type="PackedScene" uid="uid://cgtdyiwf2fflg" path="res://scenes/obstaculo/obstacle_spawner.tscn" id="3_uktl7"]
+[ext_resource type="PackedScene" uid="uid://bh8dlb37dv4dv" path="res://scenes/puntaje/mate_spawner.tscn" id="4_2u203"]
 [ext_resource type="TileSet" uid="uid://ckcttcxat0bej" path="res://scenes/fondo/tile_fondo.tres" id="4_ea5rw"]
+[ext_resource type="PackedScene" uid="uid://datts3t0c7llc" path="res://scenes/puntaje/mate.tscn" id="5_2u203"]
 
 [node name="Node2D" type="Node2D"]
 
@@ -13,9 +14,11 @@ tile_set = ExtResource("4_ea5rw")
 
 [node name="Suelo" parent="." instance=ExtResource("2_uktl7")]
 
-[node name="Obstacle" parent="." instance=ExtResource("2_qnah2")]
-position = Vector2(0, 253)
-
 [node name="Node2D" parent="." instance=ExtResource("3_uktl7")]
 spawn_distance = 300.0
 ground_y = 251.0
+
+[node name="MateSpawner" parent="." instance=ExtResource("4_2u203")]
+
+[node name="Mate" parent="." instance=ExtResource("5_2u203")]
+position = Vector2(-45, 191)
