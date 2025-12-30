@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cmme5cnah0lpg"
-path="res://.godot/imported/tile_0124.png-fc8585daadfe51eb655213d31ab944b2.ctex"
+uid="uid://bbjlvcr1npayb"
+path="res://.godot/imported/obstaculo_cactus.png-844fbfc11281c2de6c06c57c808cc0ce.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/kenney_pixel-platformer/Tiles/tile_0124.png"
-dest_files=["res://.godot/imported/tile_0124.png-fc8585daadfe51eb655213d31ab944b2.ctex"]
+source_file="res://assets/obstaculos/obstaculo_cactus.png"
+dest_files=["res://.godot/imported/obstaculo_cactus.png-844fbfc11281c2de6c06c57c808cc0ce.ctex"]
 
 [params]
 

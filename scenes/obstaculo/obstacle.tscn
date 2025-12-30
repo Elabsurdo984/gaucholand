@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://c8t72ifsktwrn"]
 
 [ext_resource type="Script" uid="uid://dwdwbiiu5wp3l" path="res://scenes/obstaculo/obstacle.gd" id="1_jewi0"]
-[ext_resource type="Texture2D" uid="uid://bbjlvcr1npayb" path="res://assets/kenney_pixel-platformer/Tiles/tile_0127.png" id="2_kdl0i"]
+[ext_resource type="Texture2D" uid="uid://bbjlvcr1npayb" path="res://assets/obstaculos/obstaculo_cactus.png" id="2_kdl0i"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wewfg"]
 size = Vector2(16, 58)

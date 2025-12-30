@@ -13,17 +13,17 @@ func _ready():
 	if obstacle_scene == null:
 		push_error("⚠️ Asigna la escena del obstáculo en el inspector!")
 		return
-	
+
 	# Primer obstáculo pronto
 	distance_since_last_spawn = spawn_distance - 100.0
 
 func _process(delta):
 	if obstacle_scene == null:
 		return
-	
+
 	# Acumular distancia recorrida
 	distance_since_last_spawn += speed * delta
-	
+
 	# Verificar si es momento de spawnear
 	if distance_since_last_spawn >= spawn_distance:
 		spawn_obstacle()
@@ -32,6 +32,9 @@ func _process(delta):
 func spawn_obstacle():
 	# Crear el obstáculo
 	var obstacle = obstacle_scene.instantiate()
+
+	# Configurar tipo aleatorio ANTES de agregar a la escena
+	obstacle.set_tipo_aleatorio()
 	
 	# Obtener la cámara
 	var camera = get_viewport().get_camera_2d()

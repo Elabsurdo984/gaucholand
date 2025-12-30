@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bbjlvcr1npayb"
-path="res://.godot/imported/tile_0127.png-a1e933de1b77cb29c2dd565eae9a5d9d.ctex"
+uid="uid://crmfry6hjbfdj"
+path="res://.godot/imported/obstaculo_piedra.png-3d701e7f6180d1a0d8398a484d8f1064.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/kenney_pixel-platformer/Tiles/tile_0127.png"
-dest_files=["res://.godot/imported/tile_0127.png-a1e933de1b77cb29c2dd565eae9a5d9d.ctex"]
+source_file="res://assets/obstaculos/obstaculo_piedra.png"
+dest_files=["res://.godot/imported/obstaculo_piedra.png-3d701e7f6180d1a0d8398a484d8f1064.ctex"]
 
 [params]
 
