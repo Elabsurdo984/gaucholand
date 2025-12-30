@@ -4,6 +4,7 @@ extends TileMapLayer
 @export var loop_width := 2000.0  # Ancho del bucle en píxeles
 
 func _process(delta):
+	
 	position.x -= speed * delta
 	
 	# Cuando se mueve demasiado a la izquierda, resetear posición
