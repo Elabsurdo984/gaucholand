@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3 uid="uid://yqwoy367o3ji"]
+
+[ext_resource type="Script" uid="uid://dw6s2myjornlv" path="res://scenes/puntaje/ui_puntaje.gd" id="1_t7i70"]
+
+[node name="UiPuntaje" type="Control" node_paths=PackedStringArray("contador")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -589.0
+offset_top = -386.0
+offset_right = -589.0
+offset_bottom = -386.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_t7i70")
+contador = NodePath("Label")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 40
+text = "Mates: "

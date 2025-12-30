@@ -6,19 +6,20 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8wb3s"]
 size = Vector2(34.5, 85)
 
-[node name="CharacterBody2D" type="CharacterBody2D"]
+[node name="CharacterBody2D" type="CharacterBody2D" node_paths=PackedStringArray("animacion")]
 collision_layer = 2
 script = ExtResource("1_02n2h")
+animacion = NodePath("AnimatedSprite2D")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
-position = Vector2(-495.55298, 186)
+position = Vector2(-495.55298, 237)
 scale = Vector2(0.89393973, 0.78125)
 sprite_frames = ExtResource("2_6bcbl")
 animation = &"agacharse"
 autoplay = "correr"
-frame_progress = 0.86734116
+frame_progress = 0.9368105
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-495.05298, 188)
+position = Vector2(-495.05298, 239)
 shape = SubResource("RectangleShape2D_8wb3s")

@@ -5,6 +5,8 @@ extends CharacterBody2D
 @export var jump_force := -420
 @export var crouch_collision_reduction := 0.5  # Reducir colisión a la mitad
 
+@export var animacion: AnimatedSprite2D
+
 var esta_vivo := true
 var esta_agachado := false
 var collision_shape_original_size: Vector2
@@ -31,7 +33,16 @@ func _physics_process(delta):
 	# Salto (solo si está en el suelo y NO está agachado)
 	if is_on_floor() and Input.is_action_just_pressed("salto") and not esta_agachado:
 		velocity.y = jump_force
-		
+
+	# Actualizar animaciones solo si NO está agachado
+	if not esta_agachado:
+		if not is_on_floor():
+			if animacion.animation != "salto":
+				animacion.play("salto")
+		else:
+			if animacion.animation != "correr":
+				animacion.play("correr")
+
 	move_and_slide()
 
 func manejar_agachado():
@@ -47,8 +58,8 @@ func agacharse():
 	esta_agachado = true
 	
 	# Cambiar a animación de agacharse
-	$AnimatedSprite2D.animation = "agacharse"
-	$AnimatedSprite2D.play()
+	animacion.animation = "agacharse"
+	animacion.play()
 	
 	# Reducir el tamaño de la colisión
 	var collision = $CollisionShape2D
