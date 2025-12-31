@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://1txub16cbc2q"
-path="res://.godot/imported/jugador_correr.png-cd36f923621b750bdb00b5087df7070b.ctex"
+uid="uid://b7ykdf33nwg2h"
+path="res://.godot/imported/mate.png-e8238b0e446744ad4a14e4573aecea6a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/personaje/jugador_correr.png"
-dest_files=["res://.godot/imported/jugador_correr.png-cd36f923621b750bdb00b5087df7070b.ctex"]
+source_file="res://assets/personajes/mate/mate.png"
+dest_files=["res://.godot/imported/mate.png-e8238b0e446744ad4a14e4573aecea6a.ctex"]
 
 [params]
 

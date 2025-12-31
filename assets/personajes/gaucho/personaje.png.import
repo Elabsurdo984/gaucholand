@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bidyshb552fj2"
-path="res://.godot/imported/jugador-frame2.png-d1fc6ac87fe13b943d5035fa5a9fc64b.ctex"
+uid="uid://cgn75kp8wndqb"
+path="res://.godot/imported/personaje.png-4d8962c562c07f285dd6c6e848c4e869.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/personaje/jugador-frame2.png"
-dest_files=["res://.godot/imported/jugador-frame2.png-d1fc6ac87fe13b943d5035fa5a9fc64b.ctex"]
+source_file="res://assets/personajes/gaucho/personaje.png"
+dest_files=["res://.godot/imported/personaje.png-4d8962c562c07f285dd6c6e848c4e869.ctex"]
 
 [params]
 

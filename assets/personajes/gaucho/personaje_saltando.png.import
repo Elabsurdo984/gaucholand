@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://db8radk0t0pbq"
-path="res://.godot/imported/personaje_casisentado.png-d9b19aafdbb950f6fd296d3bf1ff9abf.ctex"
+uid="uid://wiyrnj36kvyl"
+path="res://.godot/imported/personaje_saltando.png-e21dd0ddbbbc1384a4123045b22a47a8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/personaje/personaje_casisentado.png"
-dest_files=["res://.godot/imported/personaje_casisentado.png-d9b19aafdbb950f6fd296d3bf1ff9abf.ctex"]
+source_file="res://assets/personajes/gaucho/personaje_saltando.png"
+dest_files=["res://.godot/imported/personaje_saltando.png-e21dd0ddbbbc1384a4123045b22a47a8.ctex"]
 
 [params]
 

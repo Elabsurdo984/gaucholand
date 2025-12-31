@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b7ykdf33nwg2h"
-path="res://.godot/imported/mate.png-9922a5a066d4d9dd62af16d40770fb53.ctex"
+uid="uid://b1cbd481u0a5e"
+path="res://.godot/imported/gaucho_run.png-9f4d0b1469a1f0935f9d1368be02525a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/mate.png"
-dest_files=["res://.godot/imported/mate.png-9922a5a066d4d9dd62af16d40770fb53.ctex"]
+source_file="res://assets/personajes/gaucho/gaucho_run.png"
+dest_files=["res://.godot/imported/gaucho_run.png-9f4d0b1469a1f0935f9d1368be02525a.ctex"]
 
 [params]
 

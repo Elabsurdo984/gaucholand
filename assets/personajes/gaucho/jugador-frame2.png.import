@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://wiyrnj36kvyl"
-path="res://.godot/imported/personaje_saltando.png-1be7da6a2f3a9cd9b30904f1ded8475a.ctex"
+uid="uid://bidyshb552fj2"
+path="res://.godot/imported/jugador-frame2.png-ccdb20a51933d23792f3519917e66b90.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/personaje/personaje_saltando.png"
-dest_files=["res://.godot/imported/personaje_saltando.png-1be7da6a2f3a9cd9b30904f1ded8475a.ctex"]
+source_file="res://assets/personajes/gaucho/jugador-frame2.png"
+dest_files=["res://.godot/imported/jugador-frame2.png-ccdb20a51933d23792f3519917e66b90.ctex"]
 
 [params]
 

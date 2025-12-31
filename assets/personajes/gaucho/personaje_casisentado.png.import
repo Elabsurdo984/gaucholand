@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjt5inoewty4h"
-path="res://.godot/imported/gaucho_salto.png-50308485db12f5cfe8ca4f3b90ee31ff.ctex"
+uid="uid://db8radk0t0pbq"
+path="res://.godot/imported/personaje_casisentado.png-cd7424a3aa1848267df4572ce56066ed.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/personaje/gaucho_salto.png"
-dest_files=["res://.godot/imported/gaucho_salto.png-50308485db12f5cfe8ca4f3b90ee31ff.ctex"]
+source_file="res://assets/personajes/gaucho/personaje_casisentado.png"
+dest_files=["res://.godot/imported/personaje_casisentado.png-cd7424a3aa1848267df4572ce56066ed.ctex"]
 
 [params]
 

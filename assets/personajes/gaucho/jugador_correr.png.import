@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b7db86mhtivjc"
-path="res://.godot/imported/personaje_agachado.png-9116d99ba58c5e9a93c17362a1b08623.ctex"
+uid="uid://1txub16cbc2q"
+path="res://.godot/imported/jugador_correr.png-88d82e63f17e5c165756acb325a97d79.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/personaje/personaje_agachado.png"
-dest_files=["res://.godot/imported/personaje_agachado.png-9116d99ba58c5e9a93c17362a1b08623.ctex"]
+source_file="res://assets/personajes/gaucho/jugador_correr.png"
+dest_files=["res://.godot/imported/jugador_correr.png-88d82e63f17e5c165756acb325a97d79.ctex"]
 
 [params]
 
