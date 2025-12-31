@@ -89,6 +89,6 @@ func _on_dialogue_ended():
 	tween.tween_property(self, "modulate:a", 0.0, 1.0)
 	await tween.finished
 
-	# Ir a la escena del truco (o felicitaciones por ahora)
+	# Ir a la escena del truco
 	await get_tree().create_timer(0.5).timeout
-	get_tree().change_scene_to_file("res://scenes/felicitaciones/felicitaciones.tscn")
+	get_tree().change_scene_to_file("res://scenes/truco/truco.tscn")

@@ -1,0 +1,193 @@
+[gd_scene load_steps=4 format=3 uid="uid://csldrx7lxoc66"]
+
+[ext_resource type="Script" uid="uid://dwuiplns4t0d3" path="res://scenes/truco/truco.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cgn75kp8wndqb" path="res://assets/personajes/gaucho/personaje.png" id="2_gaucho"]
+[ext_resource type="Texture2D" uid="uid://b7sc77ig5pli5" path="res://assets/personajes/muerte/muerte.png" id="3_muerte"]
+
+[node name="Truco" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Fondo" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="PañoVerde" type="ColorRect" parent="Fondo"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.133, 0.545, 0.133, 1)
+
+[node name="Mesa" type="ColorRect" parent="Fondo"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -100.0
+offset_right = 200.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0784, 0.392, 0.0784, 1)
+
+[node name="Personajes" type="Node2D" parent="."]
+
+[node name="Gaucho" type="Sprite2D" parent="Personajes"]
+position = Vector2(150, 520)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_gaucho")
+
+[node name="Muerte" type="Sprite2D" parent="Personajes"]
+position = Vector2(1028, 156.00009)
+scale = Vector2(0.382, 0.44999996)
+texture = ExtResource("3_muerte")
+
+[node name="JugadorCartas" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -180.0
+offset_top = -180.0
+offset_right = 180.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="MuerteCartas" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 20.0
+offset_right = 180.0
+offset_bottom = 180.0
+grow_horizontal = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Mesa" type="Node2D" parent="."]
+position = Vector2(576, 324)
+
+[node name="CartaJugador" type="Node2D" parent="Mesa"]
+position = Vector2(0, 80)
+
+[node name="Placeholder" type="ColorRect" parent="Mesa/CartaJugador"]
+offset_left = -40.0
+offset_top = -60.0
+offset_right = 40.0
+offset_bottom = 60.0
+color = Color(0.8, 0.8, 0.8, 0.3)
+
+[node name="CartaMuerte" type="Node2D" parent="Mesa"]
+position = Vector2(0, -80)
+
+[node name="Placeholder" type="ColorRect" parent="Mesa/CartaMuerte"]
+offset_left = -40.0
+offset_top = -60.0
+offset_right = 40.0
+offset_bottom = 60.0
+color = Color(0.8, 0.8, 0.8, 0.3)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="PuntosPanel" type="Panel" parent="UI"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 60.0
+grow_horizontal = 2
+
+[node name="PuntosJugador" type="Label" parent="UI/PuntosPanel"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 40.0
+offset_top = -14.0
+offset_right = 200.0
+offset_bottom = 14.0
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 20
+text = "Jugador: 0"
+
+[node name="PuntosMuerte" type="Label" parent="UI/PuntosPanel"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -14.0
+offset_right = -40.0
+offset_bottom = 14.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.8, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 20
+text = "Muerte: 0"
+horizontal_alignment = 2
+
+[node name="BotonesPanel" type="HBoxContainer" parent="UI"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_top = -220.0
+offset_right = 250.0
+offset_bottom = -180.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="BtnEnvido" type="Button" parent="UI/BotonesPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "ENVIDO"
+
+[node name="BtnTruco" type="Button" parent="UI/BotonesPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "TRUCO"
+
+[node name="BtnMazo" type="Button" parent="UI/BotonesPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "MAZO"
+
+[node name="MensajeLabel" type="Label" parent="UI"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -200.0
+offset_right = 200.0
+offset_bottom = -150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 24
+text = "Nueva mano"
+horizontal_alignment = 1
+vertical_alignment = 1
