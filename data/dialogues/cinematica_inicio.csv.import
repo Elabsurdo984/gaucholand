@@ -1,0 +1,15 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://tducm78jco1e"
+valid=false
+
+[deps]
+
+source_file="res://data/dialogues/cinematica_inicio.csv"
+
+[params]
+
+compress=true
+delimiter=0
