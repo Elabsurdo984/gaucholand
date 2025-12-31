@@ -1,6 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cinematica_inicio_001"]
+[gd_scene load_steps=5 format=3 uid="uid://cinematica_inicio_001"]
 
 [ext_resource type="Script" path="res://scenes/cinematica/cinematica_inicio.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/personajes/gaucho/personaje.png" id="2_gaucho"]
+[ext_resource type="Texture2D" path="res://assets/personajes/muerte/muerte.png" id="3_muerte"]
 
 [sub_resource type="Gradient" id="Gradient_cielo"]
 offsets = PackedFloat32Array(0, 0.5, 1)
@@ -94,8 +96,10 @@ polygon = PackedVector2Array(0, 0, -10, 100, -15, 150, -5, 150, 0, 200, 5, 150, 
 [node name="Gaucho" type="Sprite2D" parent="Personajes"]
 position = Vector2(300, 450)
 scale = Vector2(2, 2)
+texture = ExtResource("2_gaucho")
 
 [node name="Muerte" type="Sprite2D" parent="Personajes"]
 modulate = Color(1, 1, 1, 0)
 position = Vector2(850, 420)
 scale = Vector2(2.5, 2.5)
+texture = ExtResource("3_muerte")
