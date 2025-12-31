@@ -33,6 +33,7 @@ func _physics_process(delta):
 	# Salto (solo si está en el suelo y NO está agachado)
 	if is_on_floor() and Input.is_action_just_pressed("salto") and not esta_agachado:
 		velocity.y = jump_force
+		$SonidoSalto.play()
 
 	# Actualizar animaciones solo si NO está agachado
 	if not esta_agachado:
@@ -88,14 +89,17 @@ func levantarse():
 func morir():
 	if not esta_vivo:
 		return
-	
+
 	esta_vivo = false
-	
+
+	# Reproducir sonido de muerte
+	$SonidoMorir.play()
+
 	$AnimatedSprite2D.modulate = Color.RED
-	
+
 	set_physics_process(false)
 	get_tree().paused = true
-	
+
 	await get_tree().create_timer(1.0).timeout
 	get_tree().paused = false
 	get_tree().reload_current_scene()
