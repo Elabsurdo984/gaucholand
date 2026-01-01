@@ -10,6 +10,8 @@ const CARTA_SCENE = preload("res://scenes/truco/carta.tscn")
 @onready var muerte_cartas_container = $MuerteCartas
 @onready var mesa_jugador = $Mesa/CartaJugador
 @onready var mesa_muerte = $Mesa/CartaMuerte
+@onready var placeholder_jugador = $Mesa/CartaJugador/Placeholder
+@onready var placeholder_muerte = $Mesa/CartaMuerte/Placeholder
 
 @onready var puntos_jugador_label = $UI/PuntosPanel/PuntosJugador
 @onready var puntos_muerte_label = $UI/PuntosPanel/PuntosMuerte
@@ -47,6 +49,11 @@ var resultado_ronda_3 := 0
 
 var puntos_en_juego := 1  # Puntos que vale la mano actual
 
+# Estado del truco
+enum EstadoTruco { NINGUNO, TRUCO, RETRUCO, VALE_CUATRO }
+var estado_truco: EstadoTruco = EstadoTruco.NINGUNO
+var truco_cantado_por_jugador := false  # Para saber quién puede subir la apuesta
+
 # ==================== INICIALIZACIÓN ====================
 func _ready():
 	print("🎴 Iniciando partida de truco contra la Muerte...")
@@ -76,6 +83,10 @@ func iniciar_nueva_mano():
 	carta_jugada_muerte = null
 	puntos_en_juego = 1
 	es_turno_jugador = true
+
+	# Resetear truco
+	estado_truco = EstadoTruco.NINGUNO
+	truco_cantado_por_jugador = false
 
 	# Limpiar cartas anteriores
 	limpiar_cartas()
@@ -180,7 +191,17 @@ func jugar_carta_jugador(carta: Carta):
 	# Mover carta a la mesa
 	carta.get_parent().remove_child(carta)
 	mesa_jugador.add_child(carta)
-	carta.position = Vector2.ZERO
+
+	# Posicionar la carta EXACTAMENTE donde está el placeholder
+	# El placeholder va de offset -40,-60 a 40,60
+	# La carta Control tiene origen en esquina superior izquierda
+	# Entonces la posicionamos en -40,-60 para que coincida
+	carta.position = Vector2(-40, -60)
+	carta.hacer_clickeable(false)  # No clickeable en la mesa
+
+	# Ocultar placeholder DESPUÉS de posicionar la carta
+	if placeholder_jugador:
+		placeholder_jugador.visible = false
 
 	mostrar_mensaje("Jugaste: " + carta.obtener_nombre_completo())
 
@@ -196,6 +217,37 @@ func actualizar_ui():
 		puntos_jugador_label.text = "Jugador: %d" % puntos_jugador
 	if puntos_muerte_label:
 		puntos_muerte_label.text = "Muerte: %d" % puntos_muerte
+
+	actualizar_boton_truco()
+
+func actualizar_boton_truco():
+	if not btn_truco:
+		return
+
+	# Determinar el texto del botón según el estado
+	match estado_truco:
+		EstadoTruco.NINGUNO:
+			btn_truco.text = "TRUCO"
+			btn_truco.disabled = not es_turno_jugador
+		EstadoTruco.TRUCO:
+			if truco_cantado_por_jugador:
+				# Esperando respuesta de la Muerte
+				btn_truco.disabled = true
+			else:
+				# La Muerte cantó, puedo retruco
+				btn_truco.text = "RETRUCO"
+				btn_truco.disabled = false
+		EstadoTruco.RETRUCO:
+			if truco_cantado_por_jugador:
+				# Esperando respuesta de la Muerte
+				btn_truco.disabled = true
+			else:
+				# La Muerte cantó, puedo vale cuatro
+				btn_truco.text = "VALE 4"
+				btn_truco.disabled = false
+		EstadoTruco.VALE_CUATRO:
+			# No se puede subir más
+			btn_truco.disabled = true
 
 func mostrar_mensaje(texto: String):
 	if mensaje_label:
@@ -224,10 +276,16 @@ func jugar_carta_muerte(carta: Carta):
 	# Mover carta a la mesa
 	carta.get_parent().remove_child(carta)
 	mesa_muerte.add_child(carta)
-	carta.position = Vector2.ZERO
+
+	# Posicionar la carta EXACTAMENTE donde está el placeholder
+	carta.position = Vector2(-40, -60)
 
 	# Mostrar boca arriba
 	carta.mostrar_frente()
+
+	# Ocultar placeholder DESPUÉS de posicionar la carta
+	if placeholder_muerte:
+		placeholder_muerte.visible = false
 
 	print("💀 Muerte juega: ", carta.obtener_nombre_completo())
 	mostrar_mensaje("Muerte juega: " + carta.obtener_nombre_completo())
@@ -282,6 +340,12 @@ func siguiente_ronda():
 	if carta_jugada_muerte:
 		carta_jugada_muerte.queue_free()
 		carta_jugada_muerte = null
+
+	# Mostrar placeholders de nuevo
+	if placeholder_jugador:
+		placeholder_jugador.visible = true
+	if placeholder_muerte:
+		placeholder_muerte.visible = true
 
 	# Siguiente ronda
 	ronda_actual += 1
@@ -373,15 +437,153 @@ func _on_envido_pressed():
 	# TODO: Lógica de envido
 
 func _on_truco_pressed():
-	print("🗣️ Jugador canta: ¡Truco!")
-	mostrar_mensaje("Cantaste Truco")
-	# TODO: Lógica de truco
+	# Determinar qué cantar según el estado actual
+	match estado_truco:
+		EstadoTruco.NINGUNO:
+			cantar_truco_jugador()
+		EstadoTruco.TRUCO:
+			if not truco_cantado_por_jugador:
+				cantar_retruco_jugador()
+		EstadoTruco.RETRUCO:
+			if truco_cantado_por_jugador:
+				cantar_vale_cuatro_jugador()
 
 func _on_mazo_pressed():
 	print("🚪 Jugador se va al mazo")
-	mostrar_mensaje("Te fuiste al mazo - Muerte gana la mano")
-	# TODO: Muerte gana puntos
+	irse_al_mazo_jugador()
+
+# ==================== SISTEMA DE TRUCO ====================
+func cantar_truco_jugador():
+	print("🗣️ Jugador canta: ¡TRUCO!")
+	estado_truco = EstadoTruco.TRUCO
+	truco_cantado_por_jugador = true
+	mostrar_mensaje("¡TRUCO! (Vale 2 puntos)")
+
+	# Desactivar botón mientras espera respuesta
+	btn_truco.disabled = true
+
+	# Esperar y que la Muerte responda
+	await get_tree().create_timer(1.0).timeout
+	muerte_responde_truco()
+
+func cantar_retruco_jugador():
+	print("🗣️ Jugador canta: ¡RETRUCO!")
+	estado_truco = EstadoTruco.RETRUCO
+	truco_cantado_por_jugador = true
+	mostrar_mensaje("¡RETRUCO! (Vale 3 puntos)")
+
+	btn_truco.disabled = true
+
+	await get_tree().create_timer(1.0).timeout
+	muerte_responde_retruco()
+
+func cantar_vale_cuatro_jugador():
+	print("🗣️ Jugador canta: ¡VALE CUATRO!")
+	estado_truco = EstadoTruco.VALE_CUATRO
+	truco_cantado_por_jugador = true
+	mostrar_mensaje("¡VALE CUATRO! (Vale 4 puntos)")
+
+	btn_truco.disabled = true
+
+	await get_tree().create_timer(1.0).timeout
+	muerte_responde_vale_cuatro()
+
+func muerte_responde_truco():
+	# IA simple: 70% acepta, 30% rechaza
+	var acepta = randf() < 0.7
+
+	if acepta:
+		# 50% chance de subir a Retruco
+		if randf() < 0.5:
+			print("💀 Muerte: ¡RETRUCO!")
+			estado_truco = EstadoTruco.RETRUCO
+			truco_cantado_por_jugador = false
+			mostrar_mensaje("Muerte dice: ¡RETRUCO! (Vale 3 puntos)")
+			puntos_en_juego = 3
+
+			# Actualizar botón para que jugador pueda decir Vale Cuatro
+			await get_tree().create_timer(1.5).timeout
+			btn_truco.text = "VALE 4"
+			btn_truco.disabled = false
+		else:
+			print("💀 Muerte: Quiero")
+			mostrar_mensaje("Muerte acepta el Truco")
+			puntos_en_juego = 2
+			btn_truco.disabled = true
+	else:
+		print("💀 Muerte: No quiero")
+		mostrar_mensaje("Muerte rechaza - Ganás 1 punto")
+		puntos_jugador += 1
+		actualizar_ui()
+		await get_tree().create_timer(2.0).timeout
+		iniciar_nueva_mano()
+
+func muerte_responde_retruco():
+	# IA simple: 60% acepta, 40% rechaza
+	var acepta = randf() < 0.6
+
+	if acepta:
+		# 30% chance de subir a Vale Cuatro
+		if randf() < 0.3:
+			print("💀 Muerte: ¡VALE CUATRO!")
+			estado_truco = EstadoTruco.VALE_CUATRO
+			truco_cantado_por_jugador = false
+			mostrar_mensaje("Muerte dice: ¡VALE CUATRO! (Vale 4 puntos)")
+			puntos_en_juego = 4
+			btn_truco.disabled = true
+		else:
+			print("💀 Muerte: Quiero")
+			mostrar_mensaje("Muerte acepta el Retruco")
+			puntos_en_juego = 3
+			btn_truco.disabled = true
+	else:
+		print("💀 Muerte: No quiero")
+		mostrar_mensaje("Muerte rechaza - Ganás 2 puntos")
+		puntos_jugador += 2
+		actualizar_ui()
+		await get_tree().create_timer(2.0).timeout
+		iniciar_nueva_mano()
+
+func muerte_responde_vale_cuatro():
+	# IA simple: 50% acepta, 50% rechaza
+	var acepta = randf() < 0.5
+
+	if acepta:
+		print("💀 Muerte: Quiero")
+		mostrar_mensaje("Muerte acepta el Vale Cuatro")
+		puntos_en_juego = 4
+		btn_truco.disabled = true
+	else:
+		print("💀 Muerte: No quiero")
+		mostrar_mensaje("Muerte rechaza - Ganás 3 puntos")
+		puntos_jugador += 3
+		actualizar_ui()
+		await get_tree().create_timer(2.0).timeout
+		iniciar_nueva_mano()
+
+func irse_al_mazo_jugador():
+	# Calcular cuántos puntos gana la Muerte según el estado del truco
+	var puntos_ganados = 1
+
+	match estado_truco:
+		EstadoTruco.NINGUNO:
+			puntos_ganados = 1
+		EstadoTruco.TRUCO:
+			puntos_ganados = 1 if truco_cantado_por_jugador else 2
+		EstadoTruco.RETRUCO:
+			puntos_ganados = 2 if truco_cantado_por_jugador else 3
+		EstadoTruco.VALE_CUATRO:
+			puntos_ganados = 3 if truco_cantado_por_jugador else 4
+
+	mostrar_mensaje("Te fuiste al mazo - Muerte gana %d punto(s)" % puntos_ganados)
+	puntos_muerte += puntos_ganados
+	actualizar_ui()
+
 	await get_tree().create_timer(2.0).timeout
+
+	if verificar_victoria():
+		return
+
 	iniciar_nueva_mano()
 
 # ==================== VICTORIA ====================

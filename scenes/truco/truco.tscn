@@ -83,7 +83,7 @@ alignment = 1
 position = Vector2(576, 324)
 
 [node name="CartaJugador" type="Node2D" parent="Mesa"]
-position = Vector2(0, 80)
+position = Vector2(-90, 0)
 
 [node name="Placeholder" type="ColorRect" parent="Mesa/CartaJugador"]
 offset_left = -40.0
@@ -93,7 +93,7 @@ offset_bottom = 60.0
 color = Color(0.8, 0.8, 0.8, 0.3)
 
 [node name="CartaMuerte" type="Node2D" parent="Mesa"]
-position = Vector2(0, -80)
+position = Vector2(90, 0)
 
 [node name="Placeholder" type="ColorRect" parent="Mesa/CartaMuerte"]
 offset_left = -40.0
