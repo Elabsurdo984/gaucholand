@@ -4,8 +4,9 @@ extends Control
 # ==================== REFERENCIAS ====================
 @export var muerte_sprite: Sprite2D
 @export var gaucho_sprite: Sprite2D
-@export var dialogue_ui: Panel
-@export var dialogue_manager: Node
+@export var dialogue_ui_scene: CanvasLayer
+
+var dialogue_manager: Node  # Referencia al DialogueManager dentro de la escena
 
 # ==================== CONFIGURACIÓN ====================
 @export_file("*.csv") var dialogue_file: String = "res://data/dialogues/cinematica_inicio.csv"
@@ -15,6 +16,10 @@ var dialogos: Array = []
 
 # ==================== INICIALIZACIÓN ====================
 func _ready():
+	# Obtener referencia al DialogueManager desde la escena instanciada
+	if dialogue_ui_scene:
+		dialogue_manager = dialogue_ui_scene.get_dialogue_manager()
+
 	# Cargar diálogos desde CSV
 	dialogos = DialogueLoader.load_from_csv(dialogue_file)
 
@@ -24,8 +29,8 @@ func _ready():
 		return
 
 	# Ocultar UI de diálogo al inicio
-	if dialogue_ui:
-		dialogue_ui.visible = false
+	if dialogue_ui_scene:
+		dialogue_ui_scene.ocultar()
 
 	# Inicialmente la muerte está invisible
 	if muerte_sprite:
@@ -51,8 +56,8 @@ func iniciar_cinematica():
 	await get_tree().create_timer(0.5).timeout
 
 	# Mostrar UI de diálogo
-	if dialogue_ui:
-		dialogue_ui.visible = true
+	if dialogue_ui_scene:
+		dialogue_ui_scene.mostrar()
 
 	# Iniciar sistema de diálogo
 	if dialogue_manager:
@@ -74,9 +79,9 @@ func _on_dialogue_ended():
 	print("🎬 Cinemática terminada - Iniciando gameplay...")
 
 	# Fade out de la UI
-	if dialogue_ui:
+	if dialogue_ui_scene:
 		var tween = create_tween()
-		tween.tween_property(dialogue_ui, "modulate:a", 0.0, 0.5)
+		tween.tween_property(dialogue_ui_scene, "modulate:a", 0.0, 0.5)
 		await tween.finished
 
 	# Transición al gameplay

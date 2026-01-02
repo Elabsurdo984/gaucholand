@@ -6,8 +6,9 @@ extends Control
 @onready var muerte_sprite = $Personajes/Muerte
 @onready var gaucho_sprite = $Personajes/Gaucho
 @onready var rancho_sprite = $Fondo/Rancho
-@onready var dialogue_ui = $DialogoUI/PanelDialogo
-@onready var dialogue_manager = $DialogueManager
+@onready var dialogue_ui_scene = $DialogueUI
+
+var dialogue_manager: Node  # Referencia al DialogueManager dentro de la escena
 
 # ==================== CONFIGURACIÓN ====================
 @export_file("*.csv") var dialogue_file: String = "res://data/dialogues/transicion_rancho.csv"
@@ -17,6 +18,10 @@ var dialogos: Array = []
 
 # ==================== INICIALIZACIÓN ====================
 func _ready():
+	# Obtener referencia al DialogueManager desde la escena instanciada
+	if dialogue_ui_scene:
+		dialogue_manager = dialogue_ui_scene.get_dialogue_manager()
+
 	# Cargar diálogos desde CSV
 	dialogos = DialogueLoader.load_from_csv(dialogue_file)
 
@@ -26,8 +31,8 @@ func _ready():
 		return
 
 	# Configuración inicial
-	if dialogue_ui:
-		dialogue_ui.visible = false
+	if dialogue_ui_scene:
+		dialogue_ui_scene.ocultar()
 
 	# Rancho empieza invisible
 	if rancho_sprite:
@@ -59,8 +64,8 @@ func iniciar_transicion():
 	await get_tree().create_timer(1.0).timeout
 
 	# 4. Mostrar UI de diálogo
-	if dialogue_ui:
-		dialogue_ui.visible = true
+	if dialogue_ui_scene:
+		dialogue_ui_scene.mostrar()
 
 	# 5. Iniciar primer diálogo del gaucho
 	if dialogue_manager:
