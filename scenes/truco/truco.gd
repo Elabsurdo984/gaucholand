@@ -248,9 +248,14 @@ func jugar_carta_jugador(carta: Carta):
 	# Cambiar turno
 	es_turno_jugador = false
 
-	# Esperar un momento y que juegue la Muerte
 	await get_tree().create_timer(1.0).timeout
-	turno_muerte()
+
+	# Si la muerte ya jugó su carta, comparar
+	if carta_jugada_muerte:
+		comparar_cartas()
+	else:
+		# La muerte aún no jugó, es su turno
+		turno_muerte()
 
 func actualizar_ui():
 	if puntos_jugador_label:
@@ -330,9 +335,19 @@ func jugar_carta_muerte(carta: Carta):
 	print("💀 Muerte juega: ", carta.obtener_nombre_completo())
 	mostrar_mensaje("Muerte juega: " + carta.obtener_nombre_completo())
 
-	# Esperar un momento y comparar
+	# Cambiar turno
+	es_turno_jugador = true
+
 	await get_tree().create_timer(1.5).timeout
-	comparar_cartas()
+
+	# Si el jugador ya jugó su carta, comparar
+	if carta_jugada_jugador:
+		comparar_cartas()
+	else:
+		# El jugador aún no jugó, activar sus cartas
+		for c in cartas_jugador:
+			c.hacer_clickeable(true)
+		mostrar_mensaje("Tu turno")
 
 # ==================== COMPARACIÓN Y RESOLUCIÓN ====================
 func comparar_cartas():
