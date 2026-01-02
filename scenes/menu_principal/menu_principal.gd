@@ -3,10 +3,10 @@
 extends Control
 
 # ==================== REFERENCIAS ====================
-@onready var btn_jugar = $VBoxContainer/BtnJugar
-@onready var btn_como_jugar = $VBoxContainer/BtnComoJugar
-@onready var btn_configuracion = $VBoxContainer/BtnConfiguracion
-@onready var btn_salir = $VBoxContainer/BtnSalir
+@onready var btn_jugar = $BotonesPanel/VBoxContainer/BtnJugar
+@onready var btn_como_jugar = $BotonesPanel/VBoxContainer/BtnComoJugar
+@onready var btn_configuracion = $BotonesPanel/VBoxContainer/BtnConfiguracion
+@onready var btn_salir = $BotonesPanel/VBoxContainer/BtnSalir
 
 # ==================== INICIALIZACIÓN ====================
 func _ready():
