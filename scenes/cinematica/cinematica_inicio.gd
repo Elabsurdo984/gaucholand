@@ -16,17 +16,27 @@ var dialogos: Array = []
 
 # ==================== INICIALIZACIÓN ====================
 func _ready():
+	# Asegurar que el tiempo esté normal
+	Engine.time_scale = 1.0
+	get_tree().paused = false
+
 	# Obtener referencia al DialogueManager desde la escena instanciada
 	if dialogue_ui_scene:
 		dialogue_manager = dialogue_ui_scene.get_dialogue_manager()
+	else:
+		push_error("❌ Cinemática: No se encontró dialogue_ui_scene")
+		return
 
 	# Cargar diálogos desde CSV
+	print("📖 Cargando diálogos desde: ", dialogue_file)
 	dialogos = DialogueLoader.load_from_csv(dialogue_file)
 
 	# Validar que se cargaron correctamente
 	if dialogos.is_empty():
-		push_error("❌ Cinemática: No se pudieron cargar los diálogos")
+		push_error("❌ Cinemática: No se pudieron cargar los diálogos desde ", dialogue_file)
 		return
+
+	print("✅ Diálogos cargados: ", dialogos.size(), " líneas")
 
 	# Ocultar UI de diálogo al inicio
 	if dialogue_ui_scene:

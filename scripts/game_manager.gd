@@ -50,11 +50,16 @@ func iniciar_secuencia_transicion():
 	# 3. Esperar un momento en slow motion
 	await get_tree().create_timer(0.5).timeout  # En tiempo real sería 1.5s
 
-	# 4. Restaurar velocidad
+	# 4. Restaurar velocidad ANTES de cambiar escena
 	Engine.time_scale = 1.0
+	get_tree().paused = false  # Asegurar que no esté pausado
 
 	# 5. Cambiar a escena de transición
 	await get_tree().create_timer(0.2).timeout
+
+	# Resetear flag antes de cambiar escena
+	en_transicion = false
+
 	get_tree().change_scene_to_file("res://scenes/transicion_rancho/transicion_rancho.tscn")
 
 func aumentar_velocidad():

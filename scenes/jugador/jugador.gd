@@ -90,6 +90,11 @@ func morir():
 	if not esta_vivo:
 		return
 
+	# Si estamos en transición al rancho, no hacer nada (dejar que la transición continue)
+	if GameManager and GameManager.en_transicion:
+		print("⚠️ Muerte durante transición - ignorando")
+		return
+
 	esta_vivo = false
 
 	# Reproducir sonido de muerte
