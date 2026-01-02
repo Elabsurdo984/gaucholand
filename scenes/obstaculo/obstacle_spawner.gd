@@ -18,9 +18,12 @@ func _ready():
 	# Primer obstáculo pronto
 	distance_since_last_spawn = spawn_distance - 100.0
 
-	# Conectar señal de transición del GameManager
+	# Conectar señales del GameManager
 	if GameManager:
 		GameManager.iniciar_transicion_rancho.connect(_on_transicion_iniciada)
+		GameManager.velocidad_cambiada.connect(_on_velocidad_cambiada)
+		# Sincronizar con la velocidad actual al inicio
+		speed = GameManager.obtener_velocidad_actual()
 
 func _process(delta):
 	if obstacle_scene == null or not spawning_activo:
@@ -40,11 +43,14 @@ func spawn_obstacle():
 
 	# Configurar tipo aleatorio ANTES de agregar a la escena
 	obstacle.set_tipo_aleatorio()
-	
+
+	# Configurar velocidad del obstáculo
+	obstacle.speed = speed
+
 	# Obtener la cámara
 	var camera = get_viewport().get_camera_2d()
 	var spawn_x = 0.0
-	
+
 	if camera:
 		# Spawnear justo afuera del borde derecho de la cámara
 		var camera_pos = camera.get_screen_center_position()
@@ -55,11 +61,11 @@ func spawn_obstacle():
 		# Fallback si no hay cámara
 		spawn_x = get_viewport_rect().size.x + spawn_offset
 		print("⚠️ No se encontró cámara, usando fallback")
-	
+
 	# Posicionarlo
 	obstacle.position.x = spawn_x
 	obstacle.position.y = ground_y
-	
+
 	# Agregarlo a la escena
 	get_parent().add_child(obstacle)
 
@@ -69,3 +75,7 @@ func spawn_obstacle():
 func _on_transicion_iniciada():
 	print("🛑 ObstacleSpawner: Deteniendo spawning por transición")
 	spawning_activo = false
+
+func _on_velocidad_cambiada(nueva_velocidad: float):
+	speed = nueva_velocidad
+	print("🎯 ObstacleSpawner: Velocidad actualizada a ", speed)

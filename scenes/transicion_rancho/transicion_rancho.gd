@@ -78,7 +78,7 @@ func iniciar_transicion():
 
 func aparecer_muerte():
 	# Fade in de la Muerte
-	if muerte_sprite:
+	if muerte_sprite and is_instance_valid(muerte_sprite):
 		var tween = create_tween()
 		tween.tween_property(muerte_sprite, "modulate:a", 1.0, 1.5)
 

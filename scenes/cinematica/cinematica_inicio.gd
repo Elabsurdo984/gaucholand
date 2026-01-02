@@ -66,10 +66,13 @@ func iniciar_cinematica():
 
 func aparecer_muerte():
 	# Fade in de la Muerte
-	if muerte_sprite:
+	if muerte_sprite and is_instance_valid(muerte_sprite):
 		var tween = create_tween()
 		tween.tween_property(muerte_sprite, "modulate:a", 1.0, 1.5)
 		await tween.finished
+	else:
+		# Si no hay sprite, esperar el tiempo equivalente
+		await get_tree().create_timer(1.5).timeout
 
 # ==================== CALLBACKS DEL DIALOGUE MANAGER ====================
 func _on_dialogue_line_started(character_name: String, text: String):
@@ -78,12 +81,12 @@ func _on_dialogue_line_started(character_name: String, text: String):
 func _on_dialogue_ended():
 	print("🎬 Cinemática terminada - Iniciando gameplay...")
 
-	# Fade out de la UI
-	if dialogue_ui_scene:
-		var tween = create_tween()
-		tween.tween_property(dialogue_ui_scene, "modulate:a", 0.0, 0.5)
-		await tween.finished
+	# Ocultar UI de diálogo
+	if dialogue_ui_scene and is_instance_valid(dialogue_ui_scene):
+		dialogue_ui_scene.ocultar()
+
+	# Esperar un momento antes de transicionar
+	await get_tree().create_timer(0.5).timeout
 
 	# Transición al gameplay
-	await get_tree().create_timer(0.5).timeout
 	get_tree().change_scene_to_file("res://scenes/nivel_pampa/nivel_pampa.tscn")

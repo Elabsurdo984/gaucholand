@@ -1,7 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cqm7xv8yx5ugx"]
+[gd_scene load_steps=3 format=3 uid="uid://cqm7xv8yx5ugx"]
 
 [ext_resource type="Script" uid="uid://dhs6hxsqd4ahh" path="res://scripts/dialogue_manager.gd" id="1_dialogue"]
-[ext_resource type="Script" path="res://scenes/dialogue_ui/dialogue_ui.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://6xwstc64dyw7" path="res://scenes/dialogue_ui/dialogue_ui.gd" id="1_script"]
 
 [node name="DialogueUI" type="CanvasLayer"]
 script = ExtResource("1_script")
@@ -53,15 +53,15 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -120.0
+offset_left = -224.0
 offset_top = -35.0
 offset_right = -20.0
-offset_bottom = -10.0
+offset_bottom = -12.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
-theme_override_font_sizes/font_size = 14
-text = "▼ Continuar"
+theme_override_font_sizes/font_size = 17
+text = "Presiona enter para continuar"
 horizontal_alignment = 2
 
 [node name="DialogueManager" type="Node" parent="." node_paths=PackedStringArray("name_label", "text_label", "continue_indicator")]

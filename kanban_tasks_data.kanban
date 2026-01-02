@@ -51,16 +51,13 @@
 				"43bb2aeb-3b13-4e37-840e-b43cfa9d643f",
 				"64e7c673-a0c9-4488-a30d-17ad24cc1a0a",
 				"fc59f536-ff00-49a6-a199-f2a56fe22344",
-				"033348e9-409d-4d88-b4d1-23794d1c49e2",
-				"a6d49ca4-cf51-4ffe-acac-7d08cb0b409a"
+				"033348e9-409d-4d88-b4d1-23794d1c49e2"
 			]
 		},
 		{
 			"uuid": "efc8ec00-1696-46a1-bcf2-1651bd819881",
 			"title": "Por Hacer",
 			"tasks": [
-				"ed853261-8fb3-435a-b3d9-9da27053563a",
-				"27c06727-e8fa-46f4-a378-01cb28b5cdde",
 				"806ff832-b6df-489e-ad46-709df79c2e56",
 				"ea3e3253-cd93-44bc-ab9f-f446b1331a98",
 				"9294f712-8fd7-482a-96bd-2ef827afaacc",
@@ -72,22 +69,22 @@
 				"3075a5ee-b2b7-4063-a62a-e7b8f7d57ef4",
 				"e0dbb2f0-efd3-4e91-bfb4-5d7bdab69c13",
 				"05d618e6-2382-4400-8535-77bf4a438bc7",
-				"540827ac-525e-4991-a027-f14260fcae17"
+				"540827ac-525e-4991-a027-f14260fcae17",
+				"25dc6337-e94c-4805-8c9d-151a5823196b"
 			]
 		},
 		{
 			"uuid": "2ed150c5-40b0-4591-a38c-ca3de0f6e620",
 			"title": "En progreso",
 			"tasks": [
-				"a3f60df8-c34e-4969-a4f7-be8c5a486305",
-				"3287962b-d46c-4555-abe9-7891ab6496be"
+				"ed853261-8fb3-435a-b3d9-9da27053563a"
 			]
 		},
 		{
 			"uuid": "0441af4a-a930-458d-9889-9f9d9881c10b",
 			"title": "Testing",
 			"tasks": [
-				"2e7aee62-ac1b-4ad8-bbe1-b8a1b44b4262"
+				"1abfef1f-ac63-449a-8931-03c4e9e5fb63"
 			]
 		},
 		{
@@ -95,7 +92,11 @@
 			"title": "Completado",
 			"tasks": [
 				"8ff69300-4608-4122-a8a1-9f2666f19cde",
-				"931f79b3-d25a-429c-b22a-21e1af1ed5a0"
+				"931f79b3-d25a-429c-b22a-21e1af1ed5a0",
+				"3287962b-d46c-4555-abe9-7891ab6496be",
+				"2e7aee62-ac1b-4ad8-bbe1-b8a1b44b4262",
+				"a3f60df8-c34e-4969-a4f7-be8c5a486305",
+				"27c06727-e8fa-46f4-a378-01cb28b5cdde"
 			]
 		}
 	],
@@ -115,19 +116,23 @@
 			"steps": [
 				{
 					"details": "Boton \"Jugar\"",
-					"done": false
+					"done": true
 				},
 				{
 					"details": "Boton \"Como Jugar\"",
-					"done": false
+					"done": true
 				},
 				{
 					"details": "Boton \"Configuracion\"",
-					"done": false
+					"done": true
 				},
 				{
 					"details": "Boton \"Salir\"",
-					"done": false
+					"done": true
+				},
+				{
+					"details": "Estilizarlo",
+					"done": true
 				}
 			]
 		},
@@ -368,13 +373,6 @@
 			"steps": []
 		},
 		{
-			"uuid": "a6d49ca4-cf51-4ffe-acac-7d08cb0b409a",
-			"title": "Mapa de argentina",
-			"description": "Con la pampa desbloqueada",
-			"category": "051ccf5a-0016-44fe-82ed-10de4df787e1",
-			"steps": []
-		},
-		{
 			"uuid": "05d618e6-2382-4400-8535-77bf4a438bc7",
 			"title": "Estadisticas",
 			"description": "",
@@ -425,6 +423,20 @@
 			"title": "Animacion de transiciones",
 			"description": "",
 			"category": "8cca9d11-47bb-4285-b229-3d739742ab93",
+			"steps": []
+		},
+		{
+			"uuid": "1abfef1f-ac63-449a-8931-03c4e9e5fb63",
+			"title": "Revisar DRY",
+			"description": "",
+			"category": "96054c33-ac23-43e2-b0af-d9dec937e76e",
+			"steps": []
+		},
+		{
+			"uuid": "25dc6337-e94c-4805-8c9d-151a5823196b",
+			"title": "Pantalla de \"Capitulo 1: La pampa\"",
+			"description": "",
+			"category": "051ccf5a-0016-44fe-82ed-10de4df787e1",
 			"steps": []
 		}
 	],
