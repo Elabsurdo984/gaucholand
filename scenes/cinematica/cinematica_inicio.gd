@@ -2,10 +2,10 @@
 extends Control
 
 # ==================== REFERENCIAS ====================
-@onready var muerte_sprite = $Personajes/Muerte
-@onready var gaucho_sprite = $Personajes/Gaucho
-@onready var dialogue_ui = $DialogoUI/PanelDialogo
-@onready var dialogue_manager = $DialogueManager
+@export var muerte_sprite: Sprite2D
+@export var gaucho_sprite: Sprite2D
+@export var dialogue_ui: Panel
+@export var dialogue_manager: Node
 
 # ==================== CONFIGURACIÓN ====================
 @export_file("*.csv") var dialogue_file: String = "res://data/dialogues/cinematica_inicio.csv"

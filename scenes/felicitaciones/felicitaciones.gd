@@ -1,6 +1,10 @@
 # felicitaciones.gd
 extends Control
 
+@export var mates_label: Label
+@export var boton_continuar: Button
+@export var boton_menu_principal: Button
+
 func _ready():
 	# Mostrar cuántos mates recolectaste
 	var mates = GameManager.obtener_mates()

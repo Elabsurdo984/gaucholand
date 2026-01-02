@@ -12,11 +12,11 @@ var palo: Palo
 var boca_arriba: bool = false
 
 # ==================== REFERENCIAS ====================
-@onready var carta_frente = $Frente
-@onready var carta_dorso = $Dorso
-@onready var numero_label = $Frente/NumeroLabel
-@onready var palo_label = $Frente/PaloLabel
-@onready var boton = $Button
+@export var carta_frente: Panel
+@export var carta_dorso: Panel
+@export var numero_label: Label 
+@export var palo_label: Label
+@export var boton: Button
 
 # ==================== SEÑALES ====================
 signal carta_clickeada(carta: Carta)

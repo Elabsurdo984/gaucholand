@@ -2,11 +2,16 @@
 
 [ext_resource type="Script" uid="uid://fejj2xihm65d" path="res://scenes/truco/carta.gd" id="1_script"]
 
-[node name="Carta" type="Control"]
+[node name="Carta" type="Control" node_paths=PackedStringArray("carta_frente", "carta_dorso", "numero_label", "palo_label", "boton")]
 custom_minimum_size = Vector2(80, 120)
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_script")
+carta_frente = NodePath("Frente")
+carta_dorso = NodePath("Dorso")
+numero_label = NodePath("Frente/NumeroLabel")
+palo_label = NodePath("Frente/PaloLabel")
+boton = NodePath("Button")
 
 [node name="Frente" type="Panel" parent="."]
 visible = false
