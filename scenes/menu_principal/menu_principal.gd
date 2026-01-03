@@ -34,8 +34,7 @@ func _on_como_jugar_pressed():
 
 func _on_configuracion_pressed():
 	print("⚙️ Abriendo configuración...")
-	# TODO: Implementar escena de configuración
-	mostrar_mensaje("¡Próximamente!")
+	get_tree().change_scene_to_file("res://scenes/configuracion/configuracion.tscn")
 
 func _on_salir_pressed():
 	print("👋 Saliendo del juego...")

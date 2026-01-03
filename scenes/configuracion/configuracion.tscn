@@ -1,0 +1,223 @@
+[gd_scene load_steps=3 format=3 uid="uid://cipy52x56qp8m"]
+
+[ext_resource type="Script" uid="uid://c0fea12jwvw2n" path="res://scenes/configuracion/configuracion.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.15, 0.2, 0.15, 0.9)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.6, 0.5, 0.2, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[node name="Configuracion" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Fondo" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.15, 0.1, 1)
+
+[node name="Titulo" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 20.0
+offset_bottom = 80.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_colors/font_outline_color = Color(0.3, 0.2, 0.1, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 48
+text = "CONFIGURACIÓN"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 100.0
+offset_top = 110.0
+offset_right = -100.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 30
+
+[node name="AudioPanel" type="Panel" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 400)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="MarginContainer" type="MarginContainer" parent="ScrollContainer/VBoxContainer/AudioPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/AudioPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Titulo" type="Label" parent="ScrollContainer/VBoxContainer/AudioPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 32
+text = "AUDIO"
+
+[node name="Separador" type="HSeparator" parent="ScrollContainer/VBoxContainer/AudioPanel/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="MusicaControl" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/AudioPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBox" type="HBoxContainer" parent="ScrollContainer/VBoxContainer/AudioPanel/MarginContainer/VBox/MusicaControl"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/AudioPanel/MarginContainer/VBox/MusicaControl/HBox"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 24
+text = "Volumen Música:"
+
+[node name="LabelValor" type="Label" parent="ScrollContainer/VBoxContainer/AudioPanel/MarginContainer/VBox/MusicaControl"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_font_sizes/font_size = 20
+text = "80%"
+horizontal_alignment = 1
+
+[node name="SliderMusica" type="HSlider" parent="ScrollContainer/VBoxContainer/AudioPanel/MarginContainer/VBox/MusicaControl"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+value = 80.0
+tick_count = 11
+ticks_on_borders = true
+
+[node name="EfectosControl" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/AudioPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBox" type="HBoxContainer" parent="ScrollContainer/VBoxContainer/AudioPanel/MarginContainer/VBox/EfectosControl"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/AudioPanel/MarginContainer/VBox/EfectosControl/HBox"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 24
+text = "Volumen Efectos:"
+
+[node name="LabelValor" type="Label" parent="ScrollContainer/VBoxContainer/AudioPanel/MarginContainer/VBox/EfectosControl"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_font_sizes/font_size = 20
+text = "80%"
+horizontal_alignment = 1
+
+[node name="SliderEfectos" type="HSlider" parent="ScrollContainer/VBoxContainer/AudioPanel/MarginContainer/VBox/EfectosControl"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+value = 80.0
+tick_count = 11
+ticks_on_borders = true
+
+[node name="VideoPanel" type="Panel" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="MarginContainer" type="MarginContainer" parent="ScrollContainer/VBoxContainer/VideoPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/VideoPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Titulo" type="Label" parent="ScrollContainer/VBoxContainer/VideoPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 32
+text = "VIDEO"
+
+[node name="Separador" type="HSeparator" parent="ScrollContainer/VBoxContainer/VideoPanel/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="PantallaCompleta" type="HBoxContainer" parent="ScrollContainer/VBoxContainer/VideoPanel/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/VideoPanel/MarginContainer/VBox/PantallaCompleta"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 24
+text = "Pantalla Completa:"
+
+[node name="CheckPantallaCompleta" type="CheckBox" parent="ScrollContainer/VBoxContainer/VideoPanel/MarginContainer/VBox/PantallaCompleta"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+
+[node name="BtnRestablecer" type="Button" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.7, 0.3, 1)
+theme_override_colors/font_hover_color = Color(1, 0.8, 0.4, 1)
+theme_override_font_sizes/font_size = 22
+text = "RESTABLECER VALORES POR DEFECTO"
+
+[node name="BtnVolver" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -60.0
+offset_right = 100.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.9, 0.4, 1)
+theme_override_colors/font_hover_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 24
+text = "VOLVER"

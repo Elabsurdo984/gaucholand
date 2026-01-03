@@ -17,6 +17,33 @@ const MATES_POR_NIVEL := 1
 var velocidad_actual := VELOCIDAD_BASE
 var ultimo_nivel_velocidad := 0  # Último nivel de dificultad alcanzado
 
+# Configuración
+const CONFIG_FILE = "user://settings.cfg"
+
+func _ready():
+	cargar_y_aplicar_configuracion()
+
+func cargar_y_aplicar_configuracion():
+	var config = ConfigFile.new()
+	var err = config.load(CONFIG_FILE)
+
+	if err == OK:
+		# Aplicar volumen de música
+		var volumen_musica = config.get_value("audio", "volumen_musica", 80)
+		var db_musica = linear_to_db(volumen_musica / 100.0)
+		AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), db_musica)
+
+		# Aplicar pantalla completa
+		var pantalla_completa = config.get_value("video", "pantalla_completa", false)
+		if pantalla_completa:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+		else:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+
+		print("✅ Configuración aplicada desde GameManager")
+	else:
+		print("📝 No se encontró configuración guardada, usando valores por defecto")
+
 func agregar_mates(cantidad: int):
 	mates_totales += cantidad
 	mates_cambiados.emit(mates_totales)
