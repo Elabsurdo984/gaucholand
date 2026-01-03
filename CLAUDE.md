@@ -334,3 +334,5 @@ gaucholand/
     ├── dialogue_manager.gd
     └── dialogue_loader.gd (class_name)
 ```
+## Buenas Practicas
+Siempre utiliza el archivo BUENAS_PRACTICAS.md en docs/BUENAS_PRACTICAS.md para hacer cualquier cosa en el proyecto
