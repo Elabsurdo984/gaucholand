@@ -30,8 +30,7 @@ func _on_jugar_pressed():
 
 func _on_como_jugar_pressed():
 	print("📖 Mostrando instrucciones...")
-	# TODO: Implementar escena de instrucciones
-	mostrar_mensaje("¡Próximamente!")
+	get_tree().change_scene_to_file("res://scenes/como_jugar/como_jugar.tscn")
 
 func _on_configuracion_pressed():
 	print("⚙️ Abriendo configuración...")

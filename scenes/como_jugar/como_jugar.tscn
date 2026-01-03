@@ -1,0 +1,377 @@
+[gd_scene load_steps=3 format=3 uid="uid://cjphh2byshnfl"]
+
+[ext_resource type="Script" uid="uid://b8q76yg671iky" path="res://scenes/como_jugar/como_jugar.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.15, 0.2, 0.15, 0.9)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.6, 0.5, 0.2, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[node name="ComoJugar" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Fondo" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.15, 0.1, 1)
+
+[node name="Titulo" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 20.0
+offset_bottom = 80.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_colors/font_outline_color = Color(0.3, 0.2, 0.1, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 48
+text = "COMO JUGAR"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = 110.0
+offset_right = -50.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 30
+
+[node name="ControlesPanel" type="Panel" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="MarginContainer" type="MarginContainer" parent="ScrollContainer/VBoxContainer/ControlesPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/ControlesPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Titulo" type="Label" parent="ScrollContainer/VBoxContainer/ControlesPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 32
+text = "CONTROLES - ENDLESS RUNNER"
+
+[node name="Separador1" type="HSeparator" parent="ScrollContainer/VBoxContainer/ControlesPanel/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="Salto" type="HBoxContainer" parent="ScrollContainer/VBoxContainer/ControlesPanel/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="Tecla" type="Label" parent="ScrollContainer/VBoxContainer/ControlesPanel/MarginContainer/VBox/Salto"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 24
+text = "ESPACIO / ↑"
+
+[node name="Descripcion" type="Label" parent="ScrollContainer/VBoxContainer/ControlesPanel/MarginContainer/VBox/Salto"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 20
+text = "Saltar obstáculos"
+
+[node name="Agacharse" type="HBoxContainer" parent="ScrollContainer/VBoxContainer/ControlesPanel/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="Tecla" type="Label" parent="ScrollContainer/VBoxContainer/ControlesPanel/MarginContainer/VBox/Agacharse"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 24
+text = "S / ↓"
+
+[node name="Descripcion" type="Label" parent="ScrollContainer/VBoxContainer/ControlesPanel/MarginContainer/VBox/Agacharse"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 20
+text = "Agacharse"
+
+[node name="ReglasPanel" type="Panel" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 550)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="MarginContainer" type="MarginContainer" parent="ScrollContainer/VBoxContainer/ReglasPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/ReglasPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Titulo" type="Label" parent="ScrollContainer/VBoxContainer/ReglasPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 32
+text = "REGLAS DEL TRUCO"
+
+[node name="Separador1" type="HSeparator" parent="ScrollContainer/VBoxContainer/ReglasPanel/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="Regla1" type="Label" parent="ScrollContainer/VBoxContainer/ReglasPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "• Cada jugador recibe 3 cartas por mano"
+autowrap_mode = 3
+
+[node name="Regla2" type="Label" parent="ScrollContainer/VBoxContainer/ReglasPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "• Se juegan hasta 3 rondas por mano (el mejor de 3)"
+autowrap_mode = 3
+
+[node name="Regla3" type="Label" parent="ScrollContainer/VBoxContainer/ReglasPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "• Quien gana 2 de 3 rondas, gana la mano"
+autowrap_mode = 3
+
+[node name="Regla4" type="Label" parent="ScrollContainer/VBoxContainer/ReglasPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "• La carta más alta gana la ronda (ver valores abajo)"
+autowrap_mode = 3
+
+[node name="Envido" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/ReglasPanel/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="Envido" type="Label" parent="ScrollContainer/VBoxContainer/ReglasPanel/MarginContainer/VBox/Envido"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "• ENVIDO: Apuesta puntos extra basados en tus cartas del mismo palo. Vale 2 puntos. Solo se puede cantar en la primer ronda. Si el rival responde Envido, vale 4"
+autowrap_mode = 3
+
+[node name="RealEnvido" type="Label" parent="ScrollContainer/VBoxContainer/ReglasPanel/MarginContainer/VBox/Envido"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "• REAL ENVIDO: Luego de cantar envido puedes cantar Real Envido, valen 3 puntos"
+autowrap_mode = 3
+
+[node name="FaltaEnvido" type="Label" parent="ScrollContainer/VBoxContainer/ReglasPanel/MarginContainer/VBox/Envido"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "• FALTA ENVIDO: Se te suma todos los puntos que le faltan al rival"
+autowrap_mode = 3
+
+[node name="Truco" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/ReglasPanel/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="Truco" type="Label" parent="ScrollContainer/VBoxContainer/ReglasPanel/MarginContainer/VBox/Truco"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "• TRUCO: Aumenta los puntos en juego durante la mano (2)"
+autowrap_mode = 3
+
+[node name="ReTruco" type="Label" parent="ScrollContainer/VBoxContainer/ReglasPanel/MarginContainer/VBox/Truco"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "• RETRUCO: Luego de cantar truco, tu rival puede responder Quiero Retruco, la mano vale 3 puntos"
+autowrap_mode = 3
+
+[node name="ValeCuatro" type="Label" parent="ScrollContainer/VBoxContainer/ReglasPanel/MarginContainer/VBox/Truco"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "• VALE CUATRO: Luego del retruco se puede responder Quiero Vale Cuatro, La mano vale 4 puntos."
+autowrap_mode = 3
+
+[node name="Regla7" type="Label" parent="ScrollContainer/VBoxContainer/ReglasPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "• MAZO: Retirarse de la mano (el oponente gana los puntos)"
+autowrap_mode = 3
+
+[node name="Espaciador" type="Control" parent="ScrollContainer/VBoxContainer/ReglasPanel/MarginContainer/VBox"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="ValoresPanel" type="Panel" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 650)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="MarginContainer" type="MarginContainer" parent="ScrollContainer/VBoxContainer/ValoresPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/ValoresPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Titulo" type="Label" parent="ScrollContainer/VBoxContainer/ValoresPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 32
+text = "VALORES DE LAS CARTAS"
+
+[node name="Separador1" type="HSeparator" parent="ScrollContainer/VBoxContainer/ValoresPanel/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="Subtitulo" type="Label" parent="ScrollContainer/VBoxContainer/ValoresPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 18
+text = "De mayor a menor valor:"
+
+[node name="Carta1" type="Label" parent="ScrollContainer/VBoxContainer/ValoresPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.3, 1)
+theme_override_font_sizes/font_size = 20
+text = "1.  1 de Espadas (la más poderosa)"
+
+[node name="Carta2" type="Label" parent="ScrollContainer/VBoxContainer/ValoresPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.3, 1)
+theme_override_font_sizes/font_size = 20
+text = "2.  1 de Bastos"
+
+[node name="Carta3" type="Label" parent="ScrollContainer/VBoxContainer/ValoresPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "3.  7 de Espadas"
+
+[node name="Carta4" type="Label" parent="ScrollContainer/VBoxContainer/ValoresPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "4.  7 de Oros"
+
+[node name="Carta5" type="Label" parent="ScrollContainer/VBoxContainer/ValoresPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "5.  3 (todos los palos)"
+
+[node name="Carta6" type="Label" parent="ScrollContainer/VBoxContainer/ValoresPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "6.  2 (todos los palos)"
+
+[node name="Carta7" type="Label" parent="ScrollContainer/VBoxContainer/ValoresPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 20
+text = "7.  1 de Copas y Oros (falsas)"
+
+[node name="Carta8" type="Label" parent="ScrollContainer/VBoxContainer/ValoresPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 20
+text = "8.  12 (Rey)"
+
+[node name="Carta9" type="Label" parent="ScrollContainer/VBoxContainer/ValoresPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 20
+text = "9.  11 (Caballo)"
+
+[node name="Carta10" type="Label" parent="ScrollContainer/VBoxContainer/ValoresPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 20
+text = "10. 10 (Sota)"
+
+[node name="Carta11" type="Label" parent="ScrollContainer/VBoxContainer/ValoresPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_font_sizes/font_size = 20
+text = "11. 7 de Copas y Bastos"
+
+[node name="Carta12" type="Label" parent="ScrollContainer/VBoxContainer/ValoresPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_font_sizes/font_size = 20
+text = "12. 6, 5, 4 (en orden descendente)"
+
+[node name="Nota" type="Label" parent="ScrollContainer/VBoxContainer/ValoresPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
+theme_override_font_sizes/font_size = 16
+text = "Nota: No se usan 8, 9 ni comodines en el truco argentino"
+horizontal_alignment = 1
+
+[node name="BtnVolver" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -60.0
+offset_right = 100.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.9, 0.4, 1)
+theme_override_colors/font_hover_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 24
+text = "VOLVER"

@@ -73,10 +73,9 @@
 			"uuid": "2ed150c5-40b0-4591-a38c-ca3de0f6e620",
 			"title": "En progreso",
 			"tasks": [
-				"64e7c673-a0c9-4488-a30d-17ad24cc1a0a",
-				"ea3e3253-cd93-44bc-ab9f-f446b1331a98",
 				"3075a5ee-b2b7-4063-a62a-e7b8f7d57ef4",
-				"9e001ad2-382c-4cc3-a009-fbca90e53290"
+				"9e001ad2-382c-4cc3-a009-fbca90e53290",
+				"ea3e3253-cd93-44bc-ab9f-f446b1331a98"
 			]
 		},
 		{
@@ -96,7 +95,8 @@
 				"2e7aee62-ac1b-4ad8-bbe1-b8a1b44b4262",
 				"a3f60df8-c34e-4969-a4f7-be8c5a486305",
 				"27c06727-e8fa-46f4-a378-01cb28b5cdde",
-				"ed853261-8fb3-435a-b3d9-9da27053563a"
+				"ed853261-8fb3-435a-b3d9-9da27053563a",
+				"64e7c673-a0c9-4488-a30d-17ad24cc1a0a"
 			]
 		}
 	],
