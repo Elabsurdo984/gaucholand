@@ -21,6 +21,13 @@ const CARTA_SCENE = preload("res://scenes/truco/carta.tscn")
 @export var btn_truco: Button
 @export var btn_mazo: Button
 
+# Botones de respuesta al envido
+@export var btn_envido_envido: Button
+@export var btn_real_envido: Button
+@export var btn_falta_envido: Button
+@export var btn_quiero: Button
+@export var btn_no_quiero: Button
+
 @export var mensaje_label: Label
 
 @export var gaucho_sprite: Sprite2D
@@ -28,7 +35,7 @@ const CARTA_SCENE = preload("res://scenes/truco/carta.tscn")
 #endregion
 
 #region CONFIGURACION
-const PUNTOS_PARA_GANAR = 1
+const PUNTOS_PARA_GANAR = 15
 #endregion
 
 #region ESTADO DEL JUEGO
@@ -58,7 +65,11 @@ var estado_truco: EstadoTruco = EstadoTruco.NINGUNO
 var truco_cantado_por_jugador := false  # Para saber quién puede subir la apuesta
 
 # Estado del envido
-var envido_ya_cantado := false
+enum EstadoEnvido { NINGUNO, ENVIDO, ENVIDO_ENVIDO, REAL_ENVIDO, FALTA_ENVIDO }
+var estado_envido: EstadoEnvido = EstadoEnvido.NINGUNO
+var envido_cantado_por_jugador := false  # Quién cantó último
+var puntos_envido_en_juego := 0  # Puntos acumulados del envido
+var envido_ya_cantado := false  # Para deshabilitar después de primera carta
 var puntos_envido_jugador := 0
 var puntos_envido_muerte := 0
 
@@ -70,13 +81,30 @@ var es_mano_jugador := true  # Al inicio, el jugador es mano
 func _ready():
     print("🎴 Iniciando partida de truco contra la Muerte...")
 
-    # Conectar botones
+    # Conectar botones principales
     if btn_envido:
         btn_envido.pressed.connect(_on_envido_pressed)
     if btn_truco:
         btn_truco.pressed.connect(_on_truco_pressed)
     if btn_mazo:
         btn_mazo.pressed.connect(_on_mazo_pressed)
+
+    # Conectar botones de respuesta al envido
+    if btn_envido_envido:
+        btn_envido_envido.pressed.connect(_on_envido_envido_pressed)
+        btn_envido_envido.visible = false
+    if btn_real_envido:
+        btn_real_envido.pressed.connect(_on_real_envido_pressed)
+        btn_real_envido.visible = false
+    if btn_falta_envido:
+        btn_falta_envido.pressed.connect(_on_falta_envido_pressed)
+        btn_falta_envido.visible = false
+    if btn_quiero:
+        btn_quiero.pressed.connect(_on_quiero_envido_pressed)
+        btn_quiero.visible = false
+    if btn_no_quiero:
+        btn_no_quiero.pressed.connect(_on_no_quiero_envido_pressed)
+        btn_no_quiero.visible = false
 
     # Iniciar partida
     await get_tree().create_timer(1.0).timeout
@@ -102,9 +130,14 @@ func iniciar_nueva_mano():
     truco_cantado_por_jugador = false
 
     # Resetear envido
+    estado_envido = EstadoEnvido.NINGUNO
+    envido_cantado_por_jugador = false
+    puntos_envido_en_juego = 0
     envido_ya_cantado = false
     if btn_envido:
-        btn_envido.disabled = false  # Habilitar envido para nueva mano
+        btn_envido.disabled = false
+        btn_envido.visible = true
+    ocultar_botones_respuesta_envido()
 
     # Limpiar cartas anteriores
     limpiar_cartas()
@@ -581,49 +614,243 @@ func calcular_envido(cartas: Array) -> int:
 
     return max_envido
 
+func calcular_puntos_falta_envido(es_para_jugador: bool) -> int:
+    # Falta envido vale los puntos que le faltan al OPONENTE para ganar
+    if es_para_jugador:
+        # Si el jugador gana, recibe lo que le falta a la Muerte
+        return PUNTOS_PARA_GANAR - puntos_muerte
+    else:
+        # Si la Muerte gana, recibe lo que le falta al jugador
+        return PUNTOS_PARA_GANAR - puntos_jugador
+
+func ocultar_botones_respuesta_envido():
+    if btn_envido_envido:
+        btn_envido_envido.visible = false
+    if btn_real_envido:
+        btn_real_envido.visible = false
+    if btn_falta_envido:
+        btn_falta_envido.visible = false
+    if btn_quiero:
+        btn_quiero.visible = false
+    if btn_no_quiero:
+        btn_no_quiero.visible = false
+
+func mostrar_botones_respuesta_envido():
+    # Mostrar opciones según el estado actual
+    var puede_subir_envido = estado_envido == EstadoEnvido.ENVIDO
+    var puede_subir_real = estado_envido <= EstadoEnvido.ENVIDO_ENVIDO
+
+    if btn_envido_envido and puede_subir_envido:
+        btn_envido_envido.visible = true
+    if btn_real_envido and puede_subir_real:
+        btn_real_envido.visible = true
+    if btn_falta_envido:
+        btn_falta_envido.visible = true
+    if btn_quiero:
+        btn_quiero.visible = true
+    if btn_no_quiero:
+        btn_no_quiero.visible = true
+
+# JUGADOR CANTA ENVIDO
 func cantar_envido_jugador():
     print("🗣️ Jugador canta: ¡ENVIDO!")
+    estado_envido = EstadoEnvido.ENVIDO
+    envido_cantado_por_jugador = true
+    puntos_envido_en_juego = 2
     envido_ya_cantado = true
-    mostrar_mensaje("¡ENVIDO! (Vale 2 puntos) - Tenés: %d" % puntos_envido_jugador)
 
-    # Desactivar botón
-    btn_envido.disabled = true
+    mostrar_mensaje("¡ENVIDO! (2 puntos) - Tenés: %d" % puntos_envido_jugador)
 
-    # Esperar y que la Muerte responda
+    # Ocultar botón de envido principal
+    if btn_envido:
+        btn_envido.visible = false
+
+    # Esperar respuesta de la Muerte
     await get_tree().create_timer(1.0).timeout
     muerte_responde_envido()
 
+func _on_envido_envido_pressed():
+    print("🗣️ Jugador responde: ¡ENVIDO!")
+    estado_envido = EstadoEnvido.ENVIDO_ENVIDO
+    envido_cantado_por_jugador = true
+    puntos_envido_en_juego = 4
+
+    mostrar_mensaje("¡ENVIDO! (4 puntos en total)")
+    ocultar_botones_respuesta_envido()
+
+    await get_tree().create_timer(1.0).timeout
+    muerte_responde_envido()
+
+func _on_real_envido_pressed():
+    print("🗣️ Jugador responde: ¡REAL ENVIDO!")
+    estado_envido = EstadoEnvido.REAL_ENVIDO
+    envido_cantado_por_jugador = true
+
+    # Calcular puntos según lo que ya estaba en juego
+    if puntos_envido_en_juego == 2:  # Solo había envido
+        puntos_envido_en_juego = 5  # 2 + 3
+    elif puntos_envido_en_juego == 4:  # Había envido-envido
+        puntos_envido_en_juego = 7  # 4 + 3
+
+    mostrar_mensaje("¡REAL ENVIDO! (%d puntos en total)" % puntos_envido_en_juego)
+    ocultar_botones_respuesta_envido()
+
+    await get_tree().create_timer(1.0).timeout
+    muerte_responde_envido()
+
+func _on_falta_envido_pressed():
+    print("🗣️ Jugador responde: ¡FALTA ENVIDO!")
+    estado_envido = EstadoEnvido.FALTA_ENVIDO
+    envido_cantado_por_jugador = true
+
+    var puntos_falta = calcular_puntos_falta_envido(true)
+    mostrar_mensaje("¡FALTA ENVIDO! (Vale %d puntos)" % puntos_falta)
+    ocultar_botones_respuesta_envido()
+
+    await get_tree().create_timer(1.0).timeout
+    muerte_responde_envido()
+
+func _on_quiero_envido_pressed():
+    print("🗣️ Jugador: ¡Quiero!")
+    ocultar_botones_respuesta_envido()
+    await resolver_envido()
+
+func _on_no_quiero_envido_pressed():
+    print("🗣️ Jugador: No quiero")
+    ocultar_botones_respuesta_envido()
+
+    # El jugador rechaza, la Muerte gana los puntos anteriores
+    var puntos_ganados = calcular_puntos_rechazo_envido()
+    mostrar_mensaje("No querés - Muerte gana %d punto(s)" % puntos_ganados)
+    puntos_muerte += puntos_ganados
+    actualizar_ui()
+
+func calcular_puntos_rechazo_envido() -> int:
+    # Cuando rechazás, el que cantó gana los puntos del canto ANTERIOR
+    match estado_envido:
+        EstadoEnvido.ENVIDO:
+            return 1  # Rechazás envido, pierde 1
+        EstadoEnvido.ENVIDO_ENVIDO:
+            return 2  # Rechazás envido-envido, pierdes 2 (el envido anterior)
+        EstadoEnvido.REAL_ENVIDO:
+            if puntos_envido_en_juego == 5:  # Era envido + real
+                return 2
+            else:  # Era envido-envido + real
+                return 4
+        EstadoEnvido.FALTA_ENVIDO:
+            # Rechazar falta envido da los puntos acumulados hasta ese momento
+            return puntos_envido_en_juego
+    return 1
+
+# IA: MUERTE RESPONDE AL ENVIDO
 func muerte_responde_envido():
-    # IA: Si tiene 25+ puntos, acepta. Si no, 50% de probabilidad
-    var acepta = puntos_envido_muerte >= 25 or randf() < 0.5
+    var acepta = false
+    var sube_apuesta = false
+    var tipo_subida = ""
 
-    if acepta:
-        print("💀 Muerte: ¡Quiero!")
-        mostrar_mensaje("Muerte acepta - Tiene: %d" % puntos_envido_muerte)
-
-        await get_tree().create_timer(1.5).timeout
-
-        # Comparar puntos
-        if puntos_envido_jugador > puntos_envido_muerte:
-            print("✅ Jugador gana el envido!")
-            mostrar_mensaje("¡Ganás el envido! (+2 puntos)")
-            puntos_jugador += 2
-        elif puntos_envido_muerte > puntos_envido_jugador:
-            print("💀 Muerte gana el envido")
-            mostrar_mensaje("Muerte gana el envido (+2 puntos)")
-            puntos_muerte += 2
+    # Lógica de IA según puntos de envido
+    if puntos_envido_muerte >= 28:
+        # Tiene muy buenos puntos, probablemente suba o acepte
+        if estado_envido == EstadoEnvido.ENVIDO and randf() < 0.6:
+            sube_apuesta = true
+            tipo_subida = "real_envido" if randf() < 0.5 else "envido"
+        elif estado_envido == EstadoEnvido.ENVIDO_ENVIDO and randf() < 0.5:
+            sube_apuesta = true
+            tipo_subida = "real_envido"
         else:
-            # Empate - gana el mano (jugador por ahora)
-            print("🤝 Empate - Gana el mano (Jugador)")
-            mostrar_mensaje("Empate - Ganás vos (sos mano) (+2 puntos)")
-            puntos_jugador += 2
-
-        actualizar_ui()
+            acepta = true
+    elif puntos_envido_muerte >= 25:
+        # Buenos puntos, más conservadora
+        if estado_envido == EstadoEnvido.ENVIDO and randf() < 0.3:
+            sube_apuesta = true
+            tipo_subida = "envido"
+        else:
+            acepta = randf() < 0.7
     else:
+        # Puntos bajos, muy conservadora
+        acepta = randf() < 0.3
+
+    if sube_apuesta:
+        muerte_sube_envido(tipo_subida)
+    elif acepta:
+        print("💀 Muerte: ¡Quiero!")
+        mostrar_mensaje("Muerte acepta")
+        await get_tree().create_timer(1.0).timeout
+        await resolver_envido()
+    else:
+        # Rechaza
+        var puntos_ganados = calcular_puntos_rechazo_envido()
         print("💀 Muerte: No quiero")
-        mostrar_mensaje("Muerte rechaza - Ganás 1 punto")
-        puntos_jugador += 1
+        mostrar_mensaje("Muerte rechaza - Ganás %d punto(s)" % puntos_ganados)
+        puntos_jugador += puntos_ganados
         actualizar_ui()
+
+func muerte_sube_envido(tipo: String):
+    if tipo == "envido":
+        print("💀 Muerte: ¡ENVIDO!")
+        estado_envido = EstadoEnvido.ENVIDO_ENVIDO
+        puntos_envido_en_juego = 4
+        envido_cantado_por_jugador = false
+        mostrar_mensaje("Muerte dice: ¡ENVIDO! (4 puntos en total)")
+    elif tipo == "real_envido":
+        print("💀 Muerte: ¡REAL ENVIDO!")
+        estado_envido = EstadoEnvido.REAL_ENVIDO
+        envido_cantado_por_jugador = false
+
+        if puntos_envido_en_juego == 2:
+            puntos_envido_en_juego = 5
+        elif puntos_envido_en_juego == 4:
+            puntos_envido_en_juego = 7
+
+        mostrar_mensaje("Muerte dice: ¡REAL ENVIDO! (%d puntos)" % puntos_envido_en_juego)
+    elif tipo == "falta_envido":
+        print("💀 Muerte: ¡FALTA ENVIDO!")
+        estado_envido = EstadoEnvido.FALTA_ENVIDO
+        envido_cantado_por_jugador = false
+        var puntos_falta = calcular_puntos_falta_envido(false)
+        mostrar_mensaje("Muerte dice: ¡FALTA ENVIDO! (%d puntos)" % puntos_falta)
+
+    await get_tree().create_timer(1.5).timeout
+    mostrar_botones_respuesta_envido()
+
+func resolver_envido():
+    var puntos_a_otorgar = puntos_envido_en_juego
+
+    # Si es falta envido, calcular los puntos correctos
+    if estado_envido == EstadoEnvido.FALTA_ENVIDO:
+        # Los puntos ya están calculados, pero hay que determinar quién gana
+        pass
+
+    mostrar_mensaje("Jugador: %d | Muerte: %d" % [puntos_envido_jugador, puntos_envido_muerte])
+    await get_tree().create_timer(2.0).timeout
+
+    # Comparar puntos
+    if puntos_envido_jugador > puntos_envido_muerte:
+        if estado_envido == EstadoEnvido.FALTA_ENVIDO:
+            puntos_a_otorgar = calcular_puntos_falta_envido(true)
+        print("✅ Jugador gana el envido!")
+        mostrar_mensaje("¡Ganás el envido! (+%d puntos)" % puntos_a_otorgar)
+        puntos_jugador += puntos_a_otorgar
+    elif puntos_envido_muerte > puntos_envido_jugador:
+        if estado_envido == EstadoEnvido.FALTA_ENVIDO:
+            puntos_a_otorgar = calcular_puntos_falta_envido(false)
+        print("💀 Muerte gana el envido")
+        mostrar_mensaje("Muerte gana el envido (+%d puntos)" % puntos_a_otorgar)
+        puntos_muerte += puntos_a_otorgar
+    else:
+        # Empate - gana el mano
+        if estado_envido == EstadoEnvido.FALTA_ENVIDO:
+            puntos_a_otorgar = calcular_puntos_falta_envido(es_mano_jugador)
+        if es_mano_jugador:
+            print("🤝 Empate - Gana el mano (Jugador)")
+            mostrar_mensaje("Empate - Ganás vos (sos mano) (+%d puntos)" % puntos_a_otorgar)
+            puntos_jugador += puntos_a_otorgar
+        else:
+            print("🤝 Empate - Gana el mano (Muerte)")
+            mostrar_mensaje("Empate - Gana Muerte (es mano) (+%d puntos)" % puntos_a_otorgar)
+            puntos_muerte += puntos_a_otorgar
+
+    actualizar_ui()
 #endregion
 
 #region SISTEMA DE TRUCO

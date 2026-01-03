@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://b7sc77ig5pli5" path="res://assets/personajes/muerte/muerte.png" id="3_muerte"]
 [ext_resource type="PackedScene" uid="uid://d2vh8nx8yx5uw" path="res://scenes/pause_menu/pause_menu.tscn" id="4_pause"]
 
-[node name="Truco" type="Control" node_paths=PackedStringArray("jugador_cartas_container", "muerte_cartas_container", "mesa_jugador", "mesa_muerte", "placeholder_jugador", "placeholder_muerte", "puntos_jugador_label", "puntos_muerte_label", "btn_envido", "btn_truco", "btn_mazo", "mensaje_label", "gaucho_sprite", "muerte_sprite")]
+[node name="Truco" type="Control" node_paths=PackedStringArray("jugador_cartas_container", "muerte_cartas_container", "mesa_jugador", "mesa_muerte", "placeholder_jugador", "placeholder_muerte", "puntos_jugador_label", "puntos_muerte_label", "btn_envido", "btn_truco", "btn_mazo", "btn_envido_envido", "btn_real_envido", "btn_falta_envido", "btn_quiero", "btn_no_quiero", "mensaje_label", "gaucho_sprite", "muerte_sprite")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -24,6 +24,11 @@ puntos_muerte_label = NodePath("UI/PuntosPanel/PuntosMuerte")
 btn_envido = NodePath("UI/BotonesPanel/BtnEnvido")
 btn_truco = NodePath("UI/BotonesPanel/BtnTruco")
 btn_mazo = NodePath("UI/BotonesPanel/BtnMazo")
+btn_envido_envido = NodePath("UI/BotonesRespuestaEnvido/Fila1/BtnEnvidoEnvido")
+btn_real_envido = NodePath("UI/BotonesRespuestaEnvido/Fila1/BtnRealEnvido")
+btn_falta_envido = NodePath("UI/BotonesRespuestaEnvido/Fila1/BtnFaltaEnvido")
+btn_quiero = NodePath("UI/BotonesRespuestaEnvido/Fila2/BtnQuiero")
+btn_no_quiero = NodePath("UI/BotonesRespuestaEnvido/Fila2/BtnNoQuiero")
 mensaje_label = NodePath("UI/MensajeLabel")
 gaucho_sprite = NodePath("Personajes/Gaucho")
 muerte_sprite = NodePath("Personajes/Muerte")
@@ -189,6 +194,62 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 18
 text = "MAZO"
+
+[node name="BotonesRespuestaEnvido" type="VBoxContainer" parent="UI"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_top = -340.0
+offset_right = 250.0
+offset_bottom = -240.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="Fila1" type="HBoxContainer" parent="UI/BotonesRespuestaEnvido"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="BtnEnvidoEnvido" type="Button" parent="UI/BotonesRespuestaEnvido/Fila1"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "ENVIDO"
+
+[node name="BtnRealEnvido" type="Button" parent="UI/BotonesRespuestaEnvido/Fila1"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "REAL ENVIDO"
+
+[node name="BtnFaltaEnvido" type="Button" parent="UI/BotonesRespuestaEnvido/Fila1"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "FALTA ENVIDO"
+
+[node name="Fila2" type="HBoxContainer" parent="UI/BotonesRespuestaEnvido"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="BtnQuiero" type="Button" parent="UI/BotonesRespuestaEnvido/Fila2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.4, 1, 0.4, 1)
+theme_override_font_sizes/font_size = 16
+text = "QUIERO"
+
+[node name="BtnNoQuiero" type="Button" parent="UI/BotonesRespuestaEnvido/Fila2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 16
+text = "NO QUIERO"
 
 [node name="MensajeLabel" type="Label" parent="UI"]
 anchors_preset = 8
