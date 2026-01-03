@@ -62,7 +62,7 @@ shadow_color = Color(1, 0.8, 0.3, 0.4)
 shadow_size = 6
 shadow_offset = Vector2(0, 2)
 
-[node name="MenuPrincipal" type="Control"]
+[node name="MenuPrincipal" type="Control" node_paths=PackedStringArray("btn_jugar", "btn_como_jugar", "btn_configuracion", "btn_salir")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -70,6 +70,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
+btn_jugar = NodePath("BotonesPanel/VBoxContainer/BtnJugar")
+btn_como_jugar = NodePath("BotonesPanel/VBoxContainer/BtnComoJugar")
+btn_configuracion = NodePath("BotonesPanel/VBoxContainer/BtnConfiguracion")
+btn_salir = NodePath("BotonesPanel/VBoxContainer/BtnSalir")
 
 [node name="Fondo" type="CanvasLayer" parent="."]
 layer = -1

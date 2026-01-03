@@ -3,7 +3,7 @@
 extends Control
 
 #region REFERENCIAS
-@onready var btn_volver = $BtnVolver
+@export var btn_volver: Button
 #endregion
 
 #region INICIALIZACIÓN

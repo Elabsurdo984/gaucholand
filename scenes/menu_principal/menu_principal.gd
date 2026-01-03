@@ -3,10 +3,10 @@
 extends Control
 
 #region REFERENCIAS
-@onready var btn_jugar = $BotonesPanel/VBoxContainer/BtnJugar
-@onready var btn_como_jugar = $BotonesPanel/VBoxContainer/BtnComoJugar
-@onready var btn_configuracion = $BotonesPanel/VBoxContainer/BtnConfiguracion
-@onready var btn_salir = $BotonesPanel/VBoxContainer/BtnSalir
+@export var btn_jugar: Button
+@export var btn_como_jugar: Button
+@export var btn_configuracion: Button
+@export var btn_salir: Button
 #endregion
 
 #region INICIALIZACIÓN

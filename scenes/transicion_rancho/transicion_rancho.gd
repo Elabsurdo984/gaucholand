@@ -3,13 +3,13 @@
 extends Control
 
 #region REFERENCIAS
-@onready var muerte_sprite = $Personajes/Muerte
-@onready var gaucho_sprite = $Personajes/Gaucho
-@onready var rancho_sprite = $Fondo/Rancho
-@onready var dialogue_ui_scene = $DialogueUI
-
-var dialogue_manager: Node  # Referencia al DialogueManager dentro de la escena
+@export var muerte_sprite: Sprite2D
+@export var gaucho_sprite: Sprite2D
+@export var rancho_sprite: Sprite2D
+@export var dialogue_ui_scene: CanvasLayer
+@export var dialogue_manager: Node
 #endregion
+
 
 #region CONFIGURACION
 @export_file("*.csv") var dialogue_file: String = "res://data/dialogues/transicion_rancho.csv"

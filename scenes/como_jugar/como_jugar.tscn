@@ -14,7 +14,7 @@ corner_radius_top_right = 15
 corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
 
-[node name="ComoJugar" type="Control"]
+[node name="ComoJugar" type="Control" node_paths=PackedStringArray("btn_volver")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,6 +22,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
+btn_volver = NodePath("BtnVolver")
 
 [node name="Fondo" type="ColorRect" parent="."]
 layout_mode = 1

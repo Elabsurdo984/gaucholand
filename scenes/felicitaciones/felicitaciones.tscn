@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cf7caswmwd2u4" path="res://scenes/felicitaciones/felicitaciones.gd" id="1_script"]
 
-[node name="Felicitaciones" type="Control"]
+[node name="Felicitaciones" type="Control" node_paths=PackedStringArray("mates_label", "boton_continuar", "boton_menu_principal")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,6 +10,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
+mates_label = NodePath("VBoxContainer/MatesLabel")
+boton_continuar = NodePath("VBoxContainer/BotonContinuar")
+boton_menu_principal = NodePath("VBoxContainer/BotonMenuPrincipal")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1

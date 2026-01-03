@@ -7,24 +7,24 @@ const CARTA_SCENE = preload("res://scenes/truco/carta.tscn")
 #endregion
 
 #region REFERENCIAS
-@onready var jugador_cartas_container = $JugadorCartas
-@onready var muerte_cartas_container = $MuerteCartas
-@onready var mesa_jugador = $Mesa/CartaJugador
-@onready var mesa_muerte = $Mesa/CartaMuerte
-@onready var placeholder_jugador = $Mesa/CartaJugador/Placeholder
-@onready var placeholder_muerte = $Mesa/CartaMuerte/Placeholder
+@export var jugador_cartas_container: HBoxContainer
+@export var muerte_cartas_container: HBoxContainer
+@export var mesa_jugador: Node2D
+@export var mesa_muerte: Node2D
+@export var placeholder_jugador: ColorRect
+@export var placeholder_muerte: ColorRect
 
-@onready var puntos_jugador_label = $UI/PuntosPanel/PuntosJugador
-@onready var puntos_muerte_label = $UI/PuntosPanel/PuntosMuerte
+@export var puntos_jugador_label: Label
+@export var puntos_muerte_label: Label
 
-@onready var btn_envido = $UI/BotonesPanel/BtnEnvido
-@onready var btn_truco = $UI/BotonesPanel/BtnTruco
-@onready var btn_mazo = $UI/BotonesPanel/BtnMazo
+@export var btn_envido: Button
+@export var btn_truco: Button
+@export var btn_mazo: Button
 
-@onready var mensaje_label = $UI/MensajeLabel
+@export var mensaje_label: Label
 
-@onready var gaucho_sprite = $Personajes/Gaucho
-@onready var muerte_sprite = $Personajes/Muerte
+@export var gaucho_sprite: Sprite2D
+@export var muerte_sprite: Sprite2D
 #endregion
 
 #region CONFIGURACION

@@ -6,7 +6,7 @@ extends Control
 @export var gaucho_sprite: Sprite2D
 @export var dialogue_ui_scene: CanvasLayer
 
-var dialogue_manager: Node  # Referencia al DialogueManager dentro de la escena
+@export var dialogue_manager: Node  # Referencia al DialogueManager dentro de la escena
 #endregion
 
 #region CONFIGURACIÓN

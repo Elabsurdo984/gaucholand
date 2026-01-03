@@ -4,11 +4,11 @@
 extends CanvasLayer
 
 #region REFERENCIAS
-@onready var panel_dialogo = $PanelDialogo
-@onready var nombre_label = $PanelDialogo/MarginContainer/VBoxContainer/NombreLabel
-@onready var texto_label = $PanelDialogo/MarginContainer/VBoxContainer/TextoLabel
-@onready var continuar_indicador = $PanelDialogo/ContinuarIndicador
-@onready var dialogue_manager = $DialogueManager
+@export var panel_dialogo: Panel
+@export var nombre_label: Label
+@export var texto_label: Label
+@export var continuar_indicador: Label
+@export var dialogue_manager: Node
 #endregion
 
 #region MÉTODOS PÚBLICOS
