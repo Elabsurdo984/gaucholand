@@ -342,12 +342,27 @@ func mostrar_mensaje(texto: String):
 func turno_muerte():
     mostrar_mensaje("Turno de la Muerte...")
 
-    # IA simple: jugar carta aleatoria por ahora
+    # Verificar que tenga cartas
     if cartas_muerte.is_empty():
         push_error("❌ La Muerte no tiene cartas!")
         return
 
-    var carta = cartas_muerte[randi() % cartas_muerte.size()]
+    # Preparar contexto para la IA
+    var contexto = {
+        "ronda_actual": ronda_actual,
+        "resultado_ronda_1": resultado_ronda_1,
+        "resultado_ronda_2": resultado_ronda_2,
+        "es_mano": not es_mano_jugador,  # Si jugador es mano, muerte NO es mano
+        "carta_jugador": carta_jugada_jugador
+    }
+
+    # Usar IA estratégica para seleccionar carta
+    var carta = IAMuerte.seleccionar_carta_estrategico(cartas_muerte, contexto)
+
+    # Debug (opcional - descomentar para ver decisiones de IA)
+    IAMuerte.debug_mano(cartas_muerte)
+    print("🤖 IA seleccionó: %s (Ronda %d)" % [carta.obtener_nombre_completo(), ronda_actual])
+
     jugar_carta_muerte(carta)
 
 func jugar_carta_muerte(carta: Carta):
@@ -744,40 +759,34 @@ func calcular_puntos_rechazo_envido() -> int:
 
 # IA: MUERTE RESPONDE AL ENVIDO
 func muerte_responde_envido():
-    var acepta = false
-    var sube_apuesta = false
-    var tipo_subida = ""
+    # Preparar contexto para la IA
+    var fuerza_mano = IAMuerte.evaluar_fuerza_mano(cartas_muerte)
+    var contexto = {
+        "puntos_envido_muerte": puntos_envido_muerte,
+        "puntos_muerte": puntos_muerte,
+        "puntos_jugador": puntos_jugador,
+        "puntos_para_ganar": PUNTOS_PARA_GANAR,
+        "estado_envido": int(estado_envido),
+        "puntos_envido_en_juego": puntos_envido_en_juego,
+        "fuerza_mano": fuerza_mano,
+        "ronda_actual": ronda_actual
+    }
 
-    # Lógica de IA según puntos de envido
-    if puntos_envido_muerte >= 28:
-        # Tiene muy buenos puntos, probablemente suba o acepte
-        if estado_envido == EstadoEnvido.ENVIDO and randf() < 0.6:
-            sube_apuesta = true
-            tipo_subida = "real_envido" if randf() < 0.5 else "envido"
-        elif estado_envido == EstadoEnvido.ENVIDO_ENVIDO and randf() < 0.5:
-            sube_apuesta = true
-            tipo_subida = "real_envido"
-        else:
-            acepta = true
-    elif puntos_envido_muerte >= 25:
-        # Buenos puntos, más conservadora
-        if estado_envido == EstadoEnvido.ENVIDO and randf() < 0.3:
-            sube_apuesta = true
-            tipo_subida = "envido"
-        else:
-            acepta = randf() < 0.7
-    else:
-        # Puntos bajos, muy conservadora
-        acepta = randf() < 0.3
+    # Usar IA para decidir respuesta
+    var respuesta = IAMuerte.responder_envido(contexto)
 
-    if sube_apuesta:
-        muerte_sube_envido(tipo_subida)
-    elif acepta:
+    if respuesta == "envido":
+        muerte_sube_envido("envido")
+    elif respuesta == "real_envido":
+        muerte_sube_envido("real_envido")
+    elif respuesta == "falta_envido":
+        muerte_sube_envido("falta_envido")
+    elif respuesta == "quiero":
         print("💀 Muerte: ¡Quiero!")
         mostrar_mensaje("Muerte acepta")
         await get_tree().create_timer(1.0).timeout
         await resolver_envido()
-    else:
+    else:  # no_quiero
         # Rechaza
         var puntos_ganados = calcular_puntos_rechazo_envido()
         print("💀 Muerte: No quiero")
@@ -890,28 +899,40 @@ func cantar_vale_cuatro_jugador():
     muerte_responde_vale_cuatro()
 
 func muerte_responde_truco():
-    # IA simple: 70% acepta, 30% rechaza
-    var acepta = randf() < 0.7
+    # Preparar contexto para la IA
+    var contexto = {
+        "ronda_actual": ronda_actual,
+        "resultado_ronda_1": resultado_ronda_1,
+        "resultado_ronda_2": resultado_ronda_2,
+        "puntos_jugador": puntos_jugador,
+        "puntos_muerte": puntos_muerte,
+        "puntos_para_ganar": PUNTOS_PARA_GANAR,
+        "estado_truco": int(estado_truco),
+        "puntos_en_juego": puntos_en_juego
+    }
 
-    if acepta:
-        # 50% chance de subir a Retruco
-        if randf() < 0.5:
-            print("💀 Muerte: ¡RETRUCO!")
-            estado_truco = EstadoTruco.RETRUCO
-            truco_cantado_por_jugador = false
-            mostrar_mensaje("Muerte dice: ¡RETRUCO! (Vale 3 puntos)")
-            puntos_en_juego = 3
+    # Usar IA para decidir respuesta
+    var respuesta = IAMuerte.responder_truco(cartas_muerte, contexto)
 
-            # Actualizar botón para que jugador pueda decir Vale Cuatro
-            await get_tree().create_timer(1.5).timeout
-            btn_truco.text = "VALE 4"
-            btn_truco.disabled = false
-        else:
-            print("💀 Muerte: Quiero")
-            mostrar_mensaje("Muerte acepta el Truco")
-            puntos_en_juego = 2
-            btn_truco.disabled = true
-    else:
+    if respuesta == "retruco":
+        print("💀 Muerte: ¡RETRUCO!")
+        estado_truco = EstadoTruco.RETRUCO
+        truco_cantado_por_jugador = false
+        mostrar_mensaje("Muerte dice: ¡RETRUCO! (Vale 3 puntos)")
+        puntos_en_juego = 3
+
+        # Actualizar botón para que jugador pueda decir Vale Cuatro
+        await get_tree().create_timer(1.5).timeout
+        btn_truco.text = "VALE 4"
+        btn_truco.disabled = false
+
+    elif respuesta == "quiero":
+        print("💀 Muerte: Quiero")
+        mostrar_mensaje("Muerte acepta el Truco")
+        puntos_en_juego = 2
+        btn_truco.disabled = true
+
+    else:  # no_quiero
         print("💀 Muerte: No quiero")
         mostrar_mensaje("Muerte rechaza - Ganás 1 punto")
         puntos_jugador += 1
@@ -920,24 +941,36 @@ func muerte_responde_truco():
         iniciar_nueva_mano()
 
 func muerte_responde_retruco():
-    # IA simple: 60% acepta, 40% rechaza
-    var acepta = randf() < 0.6
+    # Preparar contexto para la IA
+    var contexto = {
+        "ronda_actual": ronda_actual,
+        "resultado_ronda_1": resultado_ronda_1,
+        "resultado_ronda_2": resultado_ronda_2,
+        "puntos_jugador": puntos_jugador,
+        "puntos_muerte": puntos_muerte,
+        "puntos_para_ganar": PUNTOS_PARA_GANAR,
+        "estado_truco": int(estado_truco),
+        "puntos_en_juego": puntos_en_juego
+    }
 
-    if acepta:
-        # 30% chance de subir a Vale Cuatro
-        if randf() < 0.3:
-            print("💀 Muerte: ¡VALE CUATRO!")
-            estado_truco = EstadoTruco.VALE_CUATRO
-            truco_cantado_por_jugador = false
-            mostrar_mensaje("Muerte dice: ¡VALE CUATRO! (Vale 4 puntos)")
-            puntos_en_juego = 4
-            btn_truco.disabled = true
-        else:
-            print("💀 Muerte: Quiero")
-            mostrar_mensaje("Muerte acepta el Retruco")
-            puntos_en_juego = 3
-            btn_truco.disabled = true
-    else:
+    # Usar IA para decidir respuesta
+    var respuesta = IAMuerte.responder_truco(cartas_muerte, contexto)
+
+    if respuesta == "vale_cuatro":
+        print("💀 Muerte: ¡VALE CUATRO!")
+        estado_truco = EstadoTruco.VALE_CUATRO
+        truco_cantado_por_jugador = false
+        mostrar_mensaje("Muerte dice: ¡VALE CUATRO! (Vale 4 puntos)")
+        puntos_en_juego = 4
+        btn_truco.disabled = true
+
+    elif respuesta == "quiero":
+        print("💀 Muerte: Quiero")
+        mostrar_mensaje("Muerte acepta el Retruco")
+        puntos_en_juego = 3
+        btn_truco.disabled = true
+
+    else:  # no_quiero
         print("💀 Muerte: No quiero")
         mostrar_mensaje("Muerte rechaza - Ganás 2 puntos")
         puntos_jugador += 2
@@ -946,21 +979,33 @@ func muerte_responde_retruco():
         iniciar_nueva_mano()
 
 func muerte_responde_vale_cuatro():
-    # IA simple: 50% acepta, 50% rechaza
-    var acepta = randf() < 0.5
+    # Preparar contexto para la IA
+    var contexto = {
+        "ronda_actual": ronda_actual,
+        "resultado_ronda_1": resultado_ronda_1,
+        "resultado_ronda_2": resultado_ronda_2,
+        "puntos_jugador": puntos_jugador,
+        "puntos_muerte": puntos_muerte,
+        "puntos_para_ganar": PUNTOS_PARA_GANAR,
+        "estado_truco": int(estado_truco),
+        "puntos_en_juego": puntos_en_juego
+    }
 
-    if acepta:
-        print("💀 Muerte: Quiero")
-        mostrar_mensaje("Muerte acepta el Vale Cuatro")
-        puntos_en_juego = 4
-        btn_truco.disabled = true
-    else:
+    # Usar IA para decidir respuesta
+    var respuesta = IAMuerte.responder_truco(cartas_muerte, contexto)
+
+    if respuesta == "no_quiero":
         print("💀 Muerte: No quiero")
         mostrar_mensaje("Muerte rechaza - Ganás 3 puntos")
         puntos_jugador += 3
         actualizar_ui()
         await get_tree().create_timer(2.0).timeout
         iniciar_nueva_mano()
+    else:  # quiero (no puede subir más)
+        print("💀 Muerte: Quiero")
+        mostrar_mensaje("Muerte acepta el Vale Cuatro")
+        puntos_en_juego = 4
+        btn_truco.disabled = true
 
 func irse_al_mazo_jugador():
     # Calcular cuántos puntos gana la Muerte según el estado del truco
