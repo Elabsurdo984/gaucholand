@@ -62,6 +62,7 @@ func agregar_mates(cantidad: int):
     print("Mates recolectados: ", mates_totales)
 
     # Verificar si se debe aumentar la velocidad (cada 10 mates)
+    @warning_ignore("integer_division")
     var nivel_actual = mates_totales / MATES_POR_NIVEL
     if nivel_actual > ultimo_nivel_velocidad:
         ultimo_nivel_velocidad = nivel_actual

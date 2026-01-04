@@ -347,6 +347,16 @@ func turno_muerte():
         push_error("❌ La Muerte no tiene cartas!")
         return
 
+    # EVALUAR SI DEBE CANTAR ENVIDO (solo ronda 1, antes de jugar carta)
+    if ronda_actual == 1 and not envido_ya_cantado and estado_envido == EstadoEnvido.NINGUNO:
+        if await ia_evaluar_cantar_envido():
+            return  # Si cantó envido, espera respuesta del jugador
+
+    # EVALUAR SI DEBE CANTAR TRUCO (rondas 1 o 2, antes de jugar carta)
+    if ronda_actual <= 2 and estado_truco == EstadoTruco.NINGUNO:
+        if await ia_evaluar_cantar_truco():
+            return  # Si cantó truco, espera respuesta del jugador
+
     # Preparar contexto para la IA
     var contexto = {
         "ronda_actual": ronda_actual,
@@ -364,6 +374,108 @@ func turno_muerte():
     print("🤖 IA seleccionó: %s (Ronda %d)" % [carta.obtener_nombre_completo(), ronda_actual])
 
     jugar_carta_muerte(carta)
+
+# Evalúa si la IA debe cantar envido proactivamente
+func ia_evaluar_cantar_envido() -> bool:
+    var fuerza_mano = IAMuerte.evaluar_fuerza_mano(cartas_muerte)
+    var contexto = {
+        "puntos_envido_muerte": puntos_envido_muerte,
+        "puntos_muerte": puntos_muerte,
+        "puntos_jugador": puntos_jugador,
+        "puntos_para_ganar": PUNTOS_PARA_GANAR,
+        "fuerza_mano": fuerza_mano,
+        "ronda_actual": ronda_actual
+    }
+
+    # Preguntar a la IA si debe cantar
+    if IAMuerte.debe_cantar_envido(contexto):
+        # Considerar si cantar falta envido directamente
+        if IAMuerte.debe_cantar_falta_envido(contexto):
+            await ia_cantar_falta_envido()
+            return true
+        else:
+            await ia_cantar_envido()
+            return true
+
+    return false
+
+# La Muerte canta ENVIDO proactivamente
+func ia_cantar_envido():
+    print("💀 Muerte: ¡ENVIDO!")
+    estado_envido = EstadoEnvido.ENVIDO
+    envido_cantado_por_jugador = false
+    puntos_envido_en_juego = 2
+    envido_ya_cantado = true
+
+    mostrar_mensaje("Muerte canta: ¡ENVIDO! (2 puntos)")
+
+    # Ocultar botón de envido del jugador
+    if btn_envido:
+        btn_envido.visible = false
+
+    # Mostrar botones de respuesta al jugador
+    mostrar_botones_respuesta_envido()
+
+    await get_tree().create_timer(1.5).timeout
+
+# La Muerte canta FALTA ENVIDO directamente
+func ia_cantar_falta_envido():
+    print("💀 Muerte: ¡FALTA ENVIDO!")
+    estado_envido = EstadoEnvido.FALTA_ENVIDO
+    envido_cantado_por_jugador = false
+    var puntos_falta = PUNTOS_PARA_GANAR - puntos_jugador
+    envido_ya_cantado = true
+
+    mostrar_mensaje("Muerte canta: ¡FALTA ENVIDO! (%d puntos)" % puntos_falta)
+
+    # Ocultar botón de envido del jugador
+    if btn_envido:
+        btn_envido.visible = false
+
+    # Mostrar solo botones Quiero/No Quiero (no puede subir más)
+    if btn_quiero:
+        btn_quiero.visible = true
+    if btn_no_quiero:
+        btn_no_quiero.visible = true
+
+    await get_tree().create_timer(1.5).timeout
+
+# Evalúa si la IA debe cantar truco proactivamente
+func ia_evaluar_cantar_truco() -> bool:
+    var fuerza_mano = IAMuerte.evaluar_fuerza_mano(cartas_muerte)
+    var contexto = {
+        "ronda_actual": ronda_actual,
+        "resultado_ronda_1": resultado_ronda_1,
+        "puntos_muerte": puntos_muerte,
+        "puntos_jugador": puntos_jugador,
+        "puntos_para_ganar": PUNTOS_PARA_GANAR,
+        "estado_truco": int(estado_truco),
+        "fuerza_mano": fuerza_mano
+    }
+
+    # Preguntar a la IA si debe cantar truco
+    if IAMuerte.debe_cantar_truco(cartas_muerte, contexto):
+        await ia_cantar_truco()
+        # No retornar true - permitir que continúe jugando carta
+        return false
+
+    return false
+
+# La Muerte canta TRUCO proactivamente
+func ia_cantar_truco():
+    print("💀 Muerte: ¡TRUCO!")
+    estado_truco = EstadoTruco.TRUCO
+    truco_cantado_por_jugador = false
+    mostrar_mensaje("Muerte canta: ¡TRUCO! (Vale 2 puntos)")
+
+    # Deshabilitar botón de truco del jugador temporalmente
+    if btn_truco:
+        btn_truco.disabled = true
+
+    await get_tree().create_timer(1.5).timeout
+
+    # El jugador puede responder (actualizar botón)
+    actualizar_boton_truco()
 
 func jugar_carta_muerte(carta: Carta):
     # Guardar carta jugada
@@ -730,6 +842,11 @@ func _on_quiero_envido_pressed():
     ocultar_botones_respuesta_envido()
     await resolver_envido()
 
+    # Si la Muerte fue quien cantó el envido y aún no jugó carta, debe jugarla
+    if not envido_cantado_por_jugador and not es_turno_jugador and not carta_jugada_muerte:
+        await get_tree().create_timer(1.0).timeout
+        turno_muerte()
+
 func _on_no_quiero_envido_pressed():
     print("🗣️ Jugador: No quiero")
     ocultar_botones_respuesta_envido()
@@ -739,6 +856,11 @@ func _on_no_quiero_envido_pressed():
     mostrar_mensaje("No querés - Muerte gana %d punto(s)" % puntos_ganados)
     puntos_muerte += puntos_ganados
     actualizar_ui()
+
+    # Si la Muerte fue quien cantó el envido y aún no jugó carta, debe jugarla
+    if not envido_cantado_por_jugador and not es_turno_jugador and not carta_jugada_muerte:
+        await get_tree().create_timer(1.0).timeout
+        turno_muerte()
 
 func calcular_puntos_rechazo_envido() -> int:
     # Cuando rechazás, el que cantó gana los puntos del canto ANTERIOR
@@ -970,6 +1092,11 @@ func muerte_responde_retruco():
         puntos_en_juego = 3
         btn_truco.disabled = true
 
+        # Si la Muerte estaba en su turno y aún no jugó carta, debe jugarla
+        if not es_turno_jugador and not carta_jugada_muerte:
+            await get_tree().create_timer(1.0).timeout
+            turno_muerte()
+
     else:  # no_quiero
         print("💀 Muerte: No quiero")
         mostrar_mensaje("Muerte rechaza - Ganás 2 puntos")
@@ -1006,6 +1133,11 @@ func muerte_responde_vale_cuatro():
         mostrar_mensaje("Muerte acepta el Vale Cuatro")
         puntos_en_juego = 4
         btn_truco.disabled = true
+
+        # Si la Muerte estaba en su turno y aún no jugó carta, debe jugarla
+        if not es_turno_jugador and not carta_jugada_muerte:
+            await get_tree().create_timer(1.0).timeout
+            turno_muerte()
 
 func irse_al_mazo_jugador():
     # Calcular cuántos puntos gana la Muerte según el estado del truco
