@@ -1,0 +1,38 @@
+name: Godot CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.3
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Godot
+      run: |
+        mkdir -v -p ~/.local/share/godot/export_templates/
+        mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable || true
+      env:
+        GODOT_VERSION: "4.3"
+
+    - name: Import project
+      run: |
+        godot --headless --import --quit || true
+        echo "Import completed"
+
+    - name: Validate project
+      run: |
+        godot --headless --script-list --quit 2>&1 | tee validation.log
+        if grep -i "error" validation.log; then
+          echo "Errors found in project!"
+          exit 1
+        fi
+        echo "Project validation successful!"
