@@ -1,36 +1,228 @@
-Buenas practicas para GODOT 4.5
-1. Convención de Nombres:
-    
-    ◦ Nodos: Usa PascalCase, por ejemplo para un nodo 2D, usa EscenaPrincipal.
-    
-    ◦ Archivos y Scripts: Usa snake_case, por ejemplo personaje_principal.tscn, para evitar problemas de compatibilidad en sistemas operativos.
-   
-    ◦ Variables y Funciones: Usa snake_case. Si una variable o función es privada (solo para uso interno del script), ponle un guion bajo adelante del nombre (ej. _velocidad).
-    
-    ◦ Constantes: Deben ir siempre en MAYÚSCULAS (ej. GRAVEDAD).
-2. GDScript y Programación:
-    
-    ◦ Tipado de variables: Aunque GDScript es dinámico, es recomendable especificar el tipo de dato (ej. var vida: int = 10). Esto mejora el rendimiento, evita errores y activa el autocompletado inteligente del editor.
-    
-    ◦ Variables exportadas: Usa @export para referenciar componentes o recursos desde el Inspector en lugar de utilizar rutas manuales (ej. @export var label: Label). Esto evita que el código se rompa si cambias el nombre o la posición de un nodo en la jerarquía.
-    
-    ◦ No utilices rutas de texto para cambiar de escena: En su lugar, usa variables @export var escena: PackedScene. Esto permite arrastrar el archivo de la escena directamente al Inspector, garantizando que Godot actualice la referencia automáticamente si mueves el archivo.
-    
-    ◦ Uso de Delta: Siempre multiplica los cálculos de movimiento o aceleración por el parámetro delta en las funciones de proceso. Esto asegura que el objeto se mueva a la misma velocidad independientemente de si la computadora corre a 30 o 144 FPS.
-    
-    ◦ PhysicsProcess vs Process: Utiliza _physics_process(delta) para todo lo relacionado con físicas o colisiones para mantener la sincronización con el motor, y _process(delta) solo para lógica visual o de entrada general.
-    
-    ◦ Señales para el desacoplamiento: Usa señales para que los nodos hijos se comuniquen con sus padres. Esto permite que los nodos sean independientes y reutilizables, ya que no necesitan conocer quién los está escuchando.
-    ◦ Llamadas diferidas: Usa call_deferred() al añadir o eliminar nodos del árbol de escenas (SceneTree) si la acción ocurre durante un cálculo de físicas, evitando errores de estado del motor.
-3. Interfaz de Usuario (UI):
-    
-    ◦ Uso de Contenedores: No posiciones los elementos de UI manualmente. Utiliza nodos de tipo Container (como VBoxContainer o HBoxContainer) para que los botones y textos se organicen y escalen automáticamente según la resolución.
-    
-    ◦ Capas de Interfaz (CanvasLayer): Coloca siempre tus nodos de interfaz dentro de un CanvasLayer. Esto garantiza que la UI se dibuje siempre por encima del juego y no se desplace cuando la cámara se mueva.
-4. Gestión de Audio:
-    
-    ◦ **Buses de Audio**: Crea buses separados para "Música" y "Efectos (SFX)" en el mezclador de audio. Esto te permite controlar el volumen de cada categoría de forma independiente sin afectar a la otra.
-5. Rendimiento y Mantenimiento:
-    
-    ◦ **Comentarios y Documentación**: Documenta partes complejas del código usando # o etiquetas como # TODO para facilitar el trabajo futuro o la colaboración.
-Analogía: Programar con estas prácticas es como construir un tablero eléctrico etiquetado. En lugar de tener cables sueltos y anónimos (rutas de texto y variables sin tipo), cada conexión tiene un color y una etiqueta clara (tipado y señales). Si necesitas cambiar un componente, no tienes que desarmar todo el sistema; simplemente desconectas el módulo y enchufas uno nuevo sin riesgo de provocar un cortocircuito
+# 🧠 Mejores Prácticas para Godot 4.5 – Desarrollo 2D
+
+Este documento recopila buenas prácticas profesionales para desarrollar juegos **2D en Godot 4.5**, enfocadas en orden, escalabilidad, rendimiento y mantenibilidad.
+
+---
+
+## 📁 1. Organización del Proyecto
+
+### 🔹 Agrupar por funcionalidad (no por tipo)
+
+❌ Evitar:
+
+```
+scripts/
+scenes/
+sprites/
+```
+
+✅ Recomendado:
+
+```
+res://
+├─ core/
+├─ systems/
+│  ├─ input/
+│  ├─ combat/
+│  └─ board/
+├─ scenes/
+├─ entities/
+├─ ui/
+└─ assets/
+```
+
+📌 Todo lo relacionado a un sistema debe vivir junto.
+
+---
+
+## 🧱 2. Escenas
+
+### 🔹 Una escena = una responsabilidad
+
+* Escenas pequeñas y reutilizables
+* Evitar escenas "monstruo"
+
+Ejemplos:
+
+* `player.tscn`
+* `enemy.tscn`
+* `hud.tscn`
+
+---
+
+### 🔹 Separar lógica y presentación
+
+* La lógica va en *controllers*
+* Los nodos visuales solo muestran
+
+Ejemplo:
+
+```
+PlayerController (Node)
+PlayerVisual (Node2D)
+```
+
+---
+
+## 📜 3. Scripts
+
+### 🔹 Un script = una responsabilidad
+
+❌ Incorrecto:
+
+```gdscript
+player.gd # movimiento + UI + guardado
+```
+
+✅ Correcto:
+
+```
+player_data.gd
+player_movement.gd
+player_attack.gd
+```
+
+---
+
+### 🔹 Nombres claros y consistentes
+
+* Usar `snake_case`
+* Evitar nombres genéricos
+
+Ejemplo:
+
+```
+game_controller.gd
+input_controller.gd
+screen_transition.gd
+```
+
+---
+
+### 🔹 Evitar scripts largos
+
+* Ideal: < 300 líneas
+* Si crece → refactorizar
+
+---
+
+## 🔄 4. Comunicación entre Nodos
+
+### 🔹 Preferir signals
+
+```gdscript
+signal action_requested(data)
+```
+
+✔ Reduce acoplamiento
+✔ Facilita mantenimiento
+
+---
+
+### 🔹 Evitar rutas largas
+
+❌
+
+```gdscript
+get_parent().get_parent().get_node("UI/HUD")
+```
+
+✅
+
+```gdscript
+ui_controller.update_score()
+```
+
+---
+
+## 🌍 5. Autoloads (Singletons)
+
+Usarlos **con moderación**.
+
+### Casos válidos:
+
+* Estado global
+* AudioManager
+* SaveManager
+* Configuración
+
+❌ Evitar meter lógica de juego principal.
+
+---
+
+## 🎮 6. Input
+
+### 🔹 Usar Input Map
+
+* Nunca hardcodear teclas
+* Permite rebinding
+
+```gdscript
+Input.is_action_pressed("move_left")
+```
+
+---
+
+## ⚙️ 7. Rendimiento 2D
+
+### 🔹 Usar nodos correctos
+
+* `Node2D` para lógica
+* `Sprite2D` solo para render
+* `CanvasLayer` para UI
+
+---
+
+### 🔹 Evitar `_process()` innecesario
+
+* Preferir señales
+* Usar `_physics_process()` solo si es necesario
+
+---
+
+## 🧩 8. Diseño del Código
+
+### 🔹 Data-driven design
+
+* Usar `Resources` o JSON
+* Separar datos de lógica
+
+---
+
+### 🔹 State Machines
+
+Usar para:
+
+* Jugador
+* Enemigos
+* Menús
+
+---
+
+## 🧪 9. Debug y Mantenimiento
+
+* Usar `print_debug()`
+* Agrupar logs
+* Limpiar código muerto
+
+---
+
+## 🧠 10. Reglas de Oro
+
+✔ Lo visual no decide reglas
+✔ La lógica no depende de la UI
+✔ Cambiar una cosa no rompe otra
+✔ El código se entiende al volver en 6 meses
+
+---
+
+## ✅ Señales de un Buen Proyecto
+
+* Escala sin volverse caótico
+* Fácil de refactorizar
+* Scripts cortos
+* Claridad total de responsabilidades
+
+---
+
+> "Un proyecto bien organizado es un proyecto que sobrevive." 🚀
