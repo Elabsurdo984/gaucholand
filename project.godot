@@ -26,6 +26,8 @@ GameManager="*res://core/game_manager.gd"
 DifficultyManager="*res://core/difficulty_manager.gd"
 ConfigManager="*res://core/config_manager.gd"
 SceneManager="*res://core/scene_manager.gd"
+ScoreManager="*res://systems/score/score_manager.gd"
+LivesManager="*res://systems/lives/lives_manager.gd"
 
 [display]
 

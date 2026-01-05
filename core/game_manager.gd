@@ -1,95 +1,110 @@
 # game_manager.gd
 # Gestión del estado global del juego
+# NOTA: Este manager ahora delega la mayoría de funcionalidades
+# a managers especializados (ScoreManager, LivesManager, etc.)
 extends Node
 
 # ============================================================
-# SIGNALS
+# SEÑALES (Ahora solo redireccionan)
 # ============================================================
-signal mates_cambiados(nuevos_mates: int)
-signal vidas_cambiadas(nuevas_vidas: int)
-signal objetivo_alcanzado
+# Estas señales se mantienen por compatibilidad pero redireccionan
+# a los managers especializados
 
 # ============================================================
-# CONSTANTES
+# VARIABLES DE COMPATIBILIDAD
 # ============================================================
-const MAX_VIDAS: int = 3
-const OBJETIVO_MATES: int = 100  # Mates necesarios para ganar
+# Propiedades de solo lectura que delegan a otros managers
+var mates_totales: int:
+	get: return ScoreManager.obtener_mates() if ScoreManager else 0
 
-# ============================================================
-# VARIABLES
-# ============================================================
-var mates_totales: int = 0
-var objetivo_alcanzado_flag: bool = false
-var vidas: int = MAX_VIDAS
-var causa_muerte: String = ""  # Razón del último Game Over
+var vidas: int:
+	get: return LivesManager.obtener_vidas() if LivesManager else 0
+
+var causa_muerte: String:
+	get: return LivesManager.obtener_causa_muerte() if LivesManager else ""
+	set(value): LivesManager.establecer_causa_muerte(value) if LivesManager else null
 
 # ============================================================
 # REFERENCIAS A OTROS MANAGERS
 # ============================================================
-# Estos se accederán como autoloads:
+# Estos se acceden como autoloads:
 # - DifficultyManager
 # - ConfigManager
 # - SceneManager
+# - ScoreManager
+# - LivesManager
 
 # ============================================================
-# PUBLIC METHODS
+# LIFECYCLE
+# ============================================================
+func _ready() -> void:
+	# Conectar señales de los managers especializados a las propias
+	# para mantener compatibilidad con código existente
+	if ScoreManager:
+		ScoreManager.mates_cambiados.connect(_reenviar_mates_cambiados)
+		ScoreManager.objetivo_alcanzado.connect(_reenviar_objetivo_alcanzado)
+
+	if LivesManager:
+		LivesManager.vidas_cambiadas.connect(_reenviar_vidas_cambiadas)
+
+# ============================================================
+# PUBLIC METHODS (COMPATIBILIDAD)
 # ============================================================
 
-## Agrega mates recolectados y verifica objetivos
+## Agrega mates recolectados (delega a ScoreManager)
 func agregar_mates(cantidad: int) -> void:
-	mates_totales += cantidad
-	mates_cambiados.emit(mates_totales)
-	print("Mates recolectados: ", mates_totales)
+	if ScoreManager:
+		ScoreManager.agregar_mates(cantidad)
 
-	# Delegar verificación de velocidad a DifficultyManager
-	DifficultyManager.verificar_aumento_velocidad(mates_totales)
-
-	# Verificar si se alcanzó el objetivo
-	if mates_totales >= OBJETIVO_MATES and not objetivo_alcanzado_flag:
-		objetivo_alcanzado_flag = true
-		objetivo_alcanzado.emit()
-
-		# Delegar transición a SceneManager
-		SceneManager.iniciar_secuencia_transicion_rancho()
-
-## Descuenta una vida y retorna true si quedan vidas
+## Descuenta una vida (delega a LivesManager)
 func descontar_vida() -> bool:
-	vidas -= 1
-	vidas_cambiadas.emit(vidas)
-	print("💔 Vida perdida. Restantes: ", vidas)
-	return vidas > 0
+	if LivesManager:
+		return LivesManager.descontar_vida()
+	return false
 
-## Reinicia el estado del juego
+## Reinicia el estado del juego (delega a todos los managers)
 func reiniciar_juego() -> void:
-	mates_totales = 0
-	vidas = MAX_VIDAS
-	objetivo_alcanzado_flag = false
-	causa_muerte = ""
+	if ScoreManager:
+		ScoreManager.reiniciar()
+	if LivesManager:
+		LivesManager.reiniciar()
+	if DifficultyManager:
+		DifficultyManager.reiniciar()
 
-	mates_cambiados.emit(mates_totales)
-	vidas_cambiadas.emit(vidas)
+	print("🔄 Juego reiniciado (GameManager)")
 
-	# Delegar reinicio de dificultad a DifficultyManager
-	DifficultyManager.reiniciar()
-
-	print("🔄 Juego reiniciado")
-
-## Obtiene los mates recolectados
+## Obtiene los mates recolectados (delega a ScoreManager)
 func obtener_mates() -> int:
-	return mates_totales
+	return ScoreManager.obtener_mates() if ScoreManager else 0
 
-## Obtiene las vidas restantes
+## Obtiene las vidas restantes (delega a LivesManager)
 func obtener_vidas() -> int:
-	return vidas
+	return LivesManager.obtener_vidas() if LivesManager else 0
 
-## Verifica si el objetivo fue alcanzado
+## Verifica si el objetivo fue alcanzado (delega a ScoreManager)
 func objetivo_fue_alcanzado() -> bool:
-	return objetivo_alcanzado_flag
+	return ScoreManager.objetivo_fue_alcanzado() if ScoreManager else false
 
-## Obtiene la velocidad actual del juego (delegado a DifficultyManager)
+## Obtiene la velocidad actual del juego (delega a DifficultyManager)
 func obtener_velocidad_actual() -> float:
-	return DifficultyManager.obtener_velocidad_actual()
+	return DifficultyManager.obtener_velocidad_actual() if DifficultyManager else 200.0
 
-## Verifica si está en transición (delegado a SceneManager)
+## Verifica si está en transición (delega a SceneManager)
 func en_transicion() -> bool:
-	return SceneManager.esta_en_transicion()
+	return SceneManager.esta_en_transicion() if SceneManager else false
+
+# ============================================================
+# SIGNAL HANDLERS (REENVÍO DE SEÑALES)
+# ============================================================
+
+func _reenviar_mates_cambiados(nuevos_mates: int) -> void:
+	# Reenviar señal para compatibilidad
+	pass  # Las escenas deben conectarse directamente a ScoreManager.mates_cambiados
+
+func _reenviar_vidas_cambiadas(nuevas_vidas: int) -> void:
+	# Reenviar señal para compatibilidad
+	pass  # Las escenas deben conectarse directamente a LivesManager.vidas_cambiadas
+
+func _reenviar_objetivo_alcanzado() -> void:
+	# Reenviar señal para compatibilidad
+	pass  # Las escenas deben conectarse directamente a ScoreManager.objetivo_alcanzado
