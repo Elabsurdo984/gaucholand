@@ -4,11 +4,11 @@ extends TileMapLayer
 @export var loop_width: float = 2000.0  # Ancho del bucle en píxeles
 
 func _ready() -> void:
-    # Conectar a la señal de cambio de velocidad del GameManager
-    if GameManager:
-        GameManager.velocidad_cambiada.connect(_on_velocidad_cambiada)
+    # Conectar a la señal de cambio de velocidad del DifficultyManager
+    if DifficultyManager:
+        DifficultyManager.velocidad_cambiada.connect(_on_velocidad_cambiada)
         # Sincronizar con la velocidad actual al inicio
-        speed = GameManager.obtener_velocidad_actual()
+        speed = DifficultyManager.obtener_velocidad_actual()
 
 func _process(delta: float) -> void:
     position.x -= speed * delta

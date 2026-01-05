@@ -18,12 +18,13 @@ func _ready() -> void:
     # Primer obstáculo pronto
     distance_since_last_spawn = spawn_distance - 100.0
 
-    # Conectar señales del GameManager
-    if GameManager:
-        GameManager.iniciar_transicion_rancho.connect(_on_transicion_iniciada)
-        GameManager.velocidad_cambiada.connect(_on_velocidad_cambiada)
+    # Conectar señales de los managers
+    if SceneManager:
+        SceneManager.iniciar_transicion_rancho.connect(_on_transicion_iniciada)
+    if DifficultyManager:
+        DifficultyManager.velocidad_cambiada.connect(_on_velocidad_cambiada)
         # Sincronizar con la velocidad actual al inicio
-        speed = GameManager.obtener_velocidad_actual()
+        speed = DifficultyManager.obtener_velocidad_actual()
 
 func _process(delta: float) -> void:
     if obstacle_scene == null or not spawning_activo:

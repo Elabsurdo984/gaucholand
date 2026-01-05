@@ -22,7 +22,10 @@ buses/default_bus_layout="res://tres/busses/default_bus_layout.tres"
 
 [autoload]
 
-GameManager="*res://scripts/game_manager.gd"
+GameManager="*res://core/game_manager.gd"
+DifficultyManager="*res://core/difficulty_manager.gd"
+ConfigManager="*res://core/config_manager.gd"
+SceneManager="*res://core/scene_manager.gd"
 
 [display]
 

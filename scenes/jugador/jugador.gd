@@ -98,7 +98,7 @@ func morir(causa: String = "") -> void:
     if not esta_vivo:
         return
 
-    if GameManager and GameManager.en_transicion:
+    if GameManager and GameManager.en_transicion():
         print("⚠️ Muerte durante transición - ignorando")
         return
 

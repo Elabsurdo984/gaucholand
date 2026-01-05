@@ -22,9 +22,14 @@ func _ready():
     # Calcular primera distancia aleatoria
     next_spawn_distance = randf_range(spawn_min_distance, spawn_max_distance)
 
-    # Conectar señal de transición del GameManager
-    if GameManager:
-        GameManager.iniciar_transicion_rancho.connect(_on_transicion_iniciada)
+    # Conectar señal de transición del SceneManager
+    if SceneManager:
+        SceneManager.iniciar_transicion_rancho.connect(_on_transicion_iniciada)
+
+    # Conectar señal de velocidad del DifficultyManager
+    if DifficultyManager:
+        DifficultyManager.velocidad_cambiada.connect(_on_velocidad_cambiada)
+        speed = DifficultyManager.obtener_velocidad_actual()
 
 func _process(delta):
     if mate_scene == null or not spawning_activo:
@@ -86,4 +91,8 @@ func spawn_mate(spawn_x: float):
 func _on_transicion_iniciada():
     print("🛑 MateSpawner: Deteniendo spawning por transición")
     spawning_activo = false
+
+func _on_velocidad_cambiada(nueva_velocidad: float) -> void:
+    speed = nueva_velocidad
+    print("🧉 MateSpawner: Velocidad actualizada a ", speed)
 #endregion
