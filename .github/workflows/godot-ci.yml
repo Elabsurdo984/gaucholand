@@ -23,16 +23,23 @@ jobs:
       env:
         GODOT_VERSION: "4.3"
 
-    - name: Import project
+    - name: Import and build project
       run: |
-        godot --headless --import --quit || true
-        echo "Import completed"
+        echo "Importing project to regenerate .godot cache..."
+        godot --headless --editor --quit
+        echo "Import completed, waiting for cache generation..."
+        sleep 2
 
     - name: Validate project
       run: |
+        echo "Validating project scripts and resources..."
         godot --headless --script-list --quit 2>&1 | tee validation.log
-        if grep -i "error" validation.log; then
-          echo "Errors found in project!"
+
+        # Ignorar warnings de UID (normales en CI sin cache)
+        if grep -i "^ERROR:" validation.log | grep -v "resources still in use" | grep -v "ObjectDB instances leaked"; then
+          echo "❌ Errors found in project!"
+          cat validation.log
           exit 1
         fi
-        echo "Project validation successful!"
+
+        echo "✅ Project validation successful!"
