@@ -39,7 +39,7 @@ signal respuesta_truco(acepta: bool)
 # ============================================================
 # VARIABLES
 # ============================================================
-const CARTA_SCENE = preload("res://scenes/truco/carta.tscn") # Usamos la carta existente
+const CARTA_SCENE = preload("res://scenes/truco_game/carta.tscn") # Usamos la carta existente
 
 # ============================================================
 # LIFECYCLE

@@ -1,7 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://csldrx7lxoc66"]
+[gd_scene load_steps=12 format=3 uid="uid://csldrx7lxoc66"]
 
+[ext_resource type="Script" uid="uid://blr6kjarghul8" path="res://scenes/truco_game/truco_controller.gd" id="1_l0s13"]
+[ext_resource type="Script" uid="uid://1scit2erw1y3" path="res://scenes/truco_game/truco_state.gd" id="2_doflq"]
 [ext_resource type="Texture2D" uid="uid://cgn75kp8wndqb" path="res://assets/personajes/gaucho/personaje.png" id="2_gaucho"]
 [ext_resource type="Texture2D" uid="uid://b7sc77ig5pli5" path="res://assets/personajes/muerte/muerte.png" id="3_muerte"]
+[ext_resource type="Script" uid="uid://ckn1y2w1gw2bl" path="res://scenes/truco_game/truco_rules.gd" id="3_tyyk8"]
+[ext_resource type="Script" uid="uid://cikncwb30xygu" path="res://scenes/truco_game/envido_system.gd" id="4_gqh5s"]
+[ext_resource type="Script" uid="uid://cusj1djcof7vs" path="res://scenes/truco_game/truco_betting.gd" id="5_yjr2k"]
+[ext_resource type="Script" uid="uid://d14rqrsygnu1t" path="res://scenes/truco_game/truco_ui.gd" id="6_v1w7m"]
+[ext_resource type="Script" uid="uid://c1vc21shbeebg" path="res://scenes/truco_game/ai/ai_muerte.gd" id="7_5ns8d"]
+[ext_resource type="Script" uid="uid://r2ngjhrfc2xb" path="res://scenes/truco_game/ai/ai_strategy.gd" id="8_o65iy"]
+[ext_resource type="Script" uid="uid://bcklcpdjo412l" path="res://scenes/truco_game/ai/ai_decision.gd" id="9_7svvo"]
 
 [node name="Truco" type="Control"]
 layout_mode = 3
@@ -10,6 +19,42 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="TrucoController" type="Node" parent="."]
+script = ExtResource("1_l0s13")
+metadata/_custom_type_script = "uid://blr6kjarghul8"
+
+[node name="TrucoState" type="Node" parent="."]
+script = ExtResource("2_doflq")
+metadata/_custom_type_script = "uid://1scit2erw1y3"
+
+[node name="TrucoRules" type="Node" parent="."]
+script = ExtResource("3_tyyk8")
+metadata/_custom_type_script = "uid://ckn1y2w1gw2bl"
+
+[node name="EnvidoSystem" type="Node" parent="."]
+script = ExtResource("4_gqh5s")
+metadata/_custom_type_script = "uid://cikncwb30xygu"
+
+[node name="TrucoBetting" type="Node" parent="."]
+script = ExtResource("5_yjr2k")
+metadata/_custom_type_script = "uid://cusj1djcof7vs"
+
+[node name="TrucoUI" type="Node" parent="."]
+script = ExtResource("6_v1w7m")
+metadata/_custom_type_script = "uid://d14rqrsygnu1t"
+
+[node name="AIMuerte" type="Node" parent="."]
+script = ExtResource("7_5ns8d")
+metadata/_custom_type_script = "uid://c1vc21shbeebg"
+
+[node name="AIStrategy" type="Node" parent="AIMuerte"]
+script = ExtResource("8_o65iy")
+metadata/_custom_type_script = "uid://r2ngjhrfc2xb"
+
+[node name="AIDecision" type="Node" parent="AIMuerte"]
+script = ExtResource("9_7svvo")
+metadata/_custom_type_script = "uid://bcklcpdjo412l"
 
 [node name="Fondo" type="CanvasLayer" parent="."]
 layer = -1

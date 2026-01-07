@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://0y22g40fid3t"]
 
-[ext_resource type="Script" uid="uid://fejj2xihm65d" path="res://scenes/truco/carta.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://fejj2xihm65d" path="res://scenes/truco_game/carta.gd" id="1_script"]
 
 [node name="Carta" type="Control" node_paths=PackedStringArray("carta_frente", "carta_dorso", "numero_label", "palo_label", "boton")]
 custom_minimum_size = Vector2(80, 120)
