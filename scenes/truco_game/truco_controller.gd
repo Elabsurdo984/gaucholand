@@ -252,7 +252,20 @@ func _on_ui_envido() -> void:
 	_on_ai_responde_envido(true)
 
 func _on_ui_truco() -> void:
-	betting.cantar_truco("jugador")
+	# Intentar cantar truco
+	var exito = betting.cantar_truco("jugador")
+
+	if not exito:
+		ui.mostrar_mensaje("No puedes cantar truco en este momento")
+		return
+
+	# Deshabilitar controles mientras se resuelve
+	ui.deshabilitar_controles()
+
+	ui.mostrar_mensaje("¡Cantaste Truco!")
+	await get_tree().create_timer(1.0).timeout
+
+	# La IA decide si acepta o no (por ahora siempre acepta)
 	_on_ai_responde_truco(true)
 
 # --- RESPUESTAS DEL JUGADOR ---
@@ -293,21 +306,26 @@ func _on_player_responde_envido(acepta: bool) -> void:
 func _on_player_responde_truco(acepta: bool) -> void:
 	if estado_respuesta_pendiente != "truco": return
 
+	# Limpiar estado de respuesta pendiente
+	estado_respuesta_pendiente = ""
+	ui.ocultar_respuestas()
+
 	if acepta:
 		betting.aceptar_apuesta()
 		ui.mostrar_mensaje("¡Quiero!")
-		estado_respuesta_pendiente = ""
-		
-		# Muerte cantó truco, ahora debe jugar su carta
-		# Forzamos que juegue carta (hack temporal, IA debería tener estado)
-		# Volvemos a pedir turno a la IA, y como ya no puede cantar truco, jugará carta
-		if not es_turno_jugador:
-			ai.ejecutar_turno()
+		await get_tree().create_timer(1.0).timeout
+
+		# Continuar con el juego - la muerte debe jugar su carta
+		iniciar_turno()
 	else:
+		ui.mostrar_mensaje("No quiero")
+		await get_tree().create_timer(1.0).timeout
+
 		var pts = betting.rechazar_apuesta()
 		state.agregar_puntos_muerte(pts)
-		ui.mostrar_mensaje("No quiero Truco")
-		estado_respuesta_pendiente = ""
+		ui.actualizar_puntos(state.puntos_jugador, state.puntos_muerte)
+		ui.mostrar_mensaje("La Muerte gana %d puntos" % pts)
+		await get_tree().create_timer(1.5).timeout
 		finalizar_mano()
 
 # --- RESPUESTAS DE IA (Simuladas por ahora) ---
@@ -341,8 +359,13 @@ func _on_ai_responde_truco(acepta: bool) -> void:
 	if acepta:
 		betting.aceptar_apuesta()
 		ui.mostrar_mensaje("La Muerte dijo: ¡Quiero!")
+		await get_tree().create_timer(1.0).timeout
+		# Rehabilitar controles y continuar jugando
+		ui.habilitar_controles(state, betting)
 	else:
 		betting.rechazar_apuesta()
+		ui.mostrar_mensaje("La Muerte dijo: No quiero")
+		await get_tree().create_timer(1.0).timeout
 		finalizar_mano()
 
 func _on_envido_resuelto(ganador: String, puntos: int) -> void:

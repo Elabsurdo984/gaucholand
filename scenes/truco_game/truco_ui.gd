@@ -93,8 +93,14 @@ func habilitar_controles(state: TrucoState, betting: TrucoBetting) -> void:
 	# Solo habilitar Envido en primera ronda, si no se cantó ya, y si no hay truco/retruco
 	var puede_envido = state.ronda_actual == 1 and not state.envido_cantado and betting.nivel_actual == TrucoBetting.NivelApuesta.NINGUNO
 
+	# Solo habilitar Truco si:
+	# - No se ha cantado truco aún (nivel == NINGUNO), O
+	# - El oponente cantó y el jugador puede responder (ultimo_apostador != "jugador")
+	var puede_truco = (betting.nivel_actual == TrucoBetting.NivelApuesta.NINGUNO) or \
+					  (betting.ultimo_apostador != "jugador" and betting.nivel_actual < TrucoBetting.NivelApuesta.VALE_CUATRO)
+
 	if btn_envido: btn_envido.disabled = not puede_envido
-	if btn_truco: btn_truco.disabled = false # Simplificado
+	if btn_truco: btn_truco.disabled = not puede_truco
 	if btn_irse: btn_irse.disabled = false
 
 	_hacer_cartas_clickeables(true)
