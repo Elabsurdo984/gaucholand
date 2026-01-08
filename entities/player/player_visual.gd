@@ -6,7 +6,7 @@ extends Node
 # ============================================================
 # REFERENCIAS
 # ============================================================
-@onready var sprite: AnimatedSprite2D = $"../AnimatedSprite2D"
+@export var sprite: AnimatedSprite2D
 
 # ============================================================
 # PUBLIC METHODS

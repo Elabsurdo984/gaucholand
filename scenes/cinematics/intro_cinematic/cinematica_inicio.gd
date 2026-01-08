@@ -104,5 +104,5 @@ func _on_dialogue_ended():
 	await get_tree().create_timer(0.5).timeout
 
 	# Transición al gameplay
-	get_tree().change_scene_to_file("res://scenes/nivel_pampa/nivel_pampa.tscn")
+	get_tree().change_scene_to_file("res://scenes/levels/nivel_pampa.tscn")
 #endregion

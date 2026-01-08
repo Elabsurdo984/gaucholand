@@ -40,7 +40,7 @@ func entrada_dramatica():
 	if color_rect:
 		color_rect.modulate.a = 0.0
 		var tween_bg = create_tween()
-		tween_bg.tween_property(color_rect, "modulate:a", 1.0, 0.4)
+		tween_bg.tween_property(color_rect, "modulate:a", 1.0, 0.6)
 	
 	await get_tree().create_timer(0.3).timeout
 	

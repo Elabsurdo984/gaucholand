@@ -91,9 +91,9 @@ func _on_menu_principal_pressed():
 	get_tree().paused = false
 	esta_pausado = false
 
-	# Resetear velocidad y estado del juego si existe
+	# Resetear estado del juego si existe
 	if GameManager:
-		GameManager.reiniciar_mates()
+		GameManager.reiniciar_juego()
 
 	# Volver al menú principal
 	get_tree().change_scene_to_file("res://ui/menus/main_menu/menu_principal.tscn")

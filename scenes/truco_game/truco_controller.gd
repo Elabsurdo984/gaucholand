@@ -134,6 +134,13 @@ func procesar_jugada(quien: String, carta) -> void:
 		ui.mostrar_mensaje("La Muerte jugó: %d de %s" % [carta["numero"], _nombre_palo(carta["palo"])])
 		es_turno_jugador = true
 
+		# Remover carta de la mano de la muerte
+		for i in range(state.cartas_muerte.size()):
+			var c = state.cartas_muerte[i]
+			if c["numero"] == carta["numero"] and c["palo"] == carta["palo"]:
+				state.cartas_muerte.remove_at(i)
+				break
+
 		# Si ambos jugaron, evaluar la ronda
 		if state.carta_jugada_jugador != null:
 			await get_tree().create_timer(1.5).timeout

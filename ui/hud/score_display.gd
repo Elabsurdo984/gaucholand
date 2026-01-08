@@ -6,34 +6,35 @@ extends Control
 @export var heart_empty: Texture2D = preload("res://assets/kenney_pixel-platformer/Tiles/tile_0046.png")
 
 func _ready() -> void:
-	if GameManager:
-		GameManager.mates_cambiados.connect(_on_mates_cambiados)
-		GameManager.vidas_cambiadas.connect(_on_vidas_cambiadas)
-		
-		_on_mates_cambiados(GameManager.obtener_mates())
-		
+	# Conectarse directamente a los managers especializados
+	if ScoreManager:
+		ScoreManager.mates_cambiados.connect(_on_mates_cambiados)
+		_on_mates_cambiados(ScoreManager.obtener_mates())
+
+	if LivesManager:
+		LivesManager.vidas_cambiadas.connect(_on_vidas_cambiadas)
+
 		# Inicializar contenedor si está vacío
 		if hearts_container and hearts_container.get_child_count() == 0:
 			configurar_corazones_iniciales()
-			
-		if "vidas" in GameManager:
-			_on_vidas_cambiadas(GameManager.vidas)
+
+		_on_vidas_cambiadas(LivesManager.obtener_vidas())
 
 func configurar_corazones_iniciales():
 	# Limpiar
 	for child in hearts_container.get_children():
 		child.queue_free()
-		
-	# Crear corazones basados en MAX_VIDAS del GameManager (o 3 por defecto)
+
+	# Crear corazones basados en MAX_VIDAS del LivesManager (o 3 por defecto)
 	var max_vidas = 3
-	if "MAX_VIDAS" in GameManager:
-		max_vidas = GameManager.MAX_VIDAS
-		
+	if LivesManager and "MAX_VIDAS" in LivesManager:
+		max_vidas = LivesManager.MAX_VIDAS
+
 	for i in range(max_vidas):
 		var rect = TextureRect.new()
 		rect.texture = heart_full
 		# Escalar x3 para que se vean bien (pixel art)
-		rect.custom_minimum_size = Vector2(48, 48) 
+		rect.custom_minimum_size = Vector2(48, 48)
 		rect.stretch_mode = TextureRect.STRETCH_SCALE
 		hearts_container.add_child(rect)
 

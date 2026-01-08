@@ -6,17 +6,17 @@ extends CharacterBody2D
 # ============================================================
 # REFERENCIAS A COMPONENTES
 # ============================================================
-@onready var controller: PlayerController = $PlayerController
-@onready var visual: PlayerVisual = $PlayerVisual
-@onready var death: PlayerDeath = $PlayerDeath
-@onready var collision_mgr: PlayerCollision = $PlayerCollision
+@export var controller: PlayerController
+@export var visual: PlayerVisual
+@export var death: PlayerDeath
+@export var collision_mgr: PlayerCollision
 
 # ============================================================
 # EXPORTS (para compatibilidad con la escena existente)
 # ============================================================
 @export var animacion: AnimatedSprite2D:
 	get:
-		return $AnimatedSprite2D if has_node("AnimatedSprite2D") else null
+		return $PlayerVisual/AnimatedSprite2D if has_node("AnimatedSprite2D") else null
 
 # ============================================================
 # MÉTODOS DE CONVENIENCIA

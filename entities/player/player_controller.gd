@@ -20,10 +20,10 @@ var esta_agachado: bool = false
 # REFERENCIAS
 # ============================================================
 @onready var body: CharacterBody2D = get_parent()
-@onready var visual: PlayerVisual = $"../PlayerVisual"
-@onready var collision_mgr: PlayerCollision = $"../PlayerCollision"
-@onready var death: PlayerDeath = $"../PlayerDeath"
-@onready var sonido_salto: AudioStreamPlayer = $"../SonidoSalto"
+@export var visual: PlayerVisual
+@export var collision_mgr: PlayerCollision
+@export var death: PlayerDeath
+@export var sonido_salto: AudioStreamPlayer2D
 
 # ============================================================
 # LIFECYCLE

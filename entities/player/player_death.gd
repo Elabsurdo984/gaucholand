@@ -16,9 +16,9 @@ var invencible: bool = false
 # ============================================================
 # REFERENCIAS
 # ============================================================
-@onready var controller: PlayerController = $"../PlayerController"
-@onready var visual: PlayerVisual = $"../PlayerVisual"
-@onready var sonido_morir: AudioStreamPlayer = $"../SonidoMorir"
+@export var controller: PlayerController
+@export var visual: PlayerVisual
+@export var sonido_morir: AudioStreamPlayer2D
 
 # ============================================================
 # PUBLIC METHODS
@@ -98,10 +98,10 @@ func secuencia_muerte_cinematica() -> void:
 	get_tree().paused = false
 
 	# 7. Pequeña pausa en negro
-	await get_tree().create_timer(0.5).timeout
+	await get_tree().create_timer(0.7).timeout
 
 	# 8. Ir a pantalla de Game Over
-	get_tree().change_scene_to_file("res://scenes/game_over/game_over.tscn")
+	get_tree().change_scene_to_file("res://ui/screens/game_over/game_over.tscn")
 
 ## Crea el efecto de fade a negro
 func crear_fade_negro() -> void:

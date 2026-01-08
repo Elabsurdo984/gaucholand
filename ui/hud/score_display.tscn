@@ -20,10 +20,10 @@ hearts_container = NodePath("HeartsContainer")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 0
-offset_left = 4.0
-offset_top = 61.0
-offset_right = 189.0
-offset_bottom = 106.0
+offset_left = 74.0
+offset_top = 84.0
+offset_right = 259.0
+offset_bottom = 129.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
 theme_override_fonts/font = ExtResource("2_bpbd7")
@@ -32,8 +32,8 @@ text = "Mates: "
 
 [node name="HeartsContainer" type="HBoxContainer" parent="."]
 layout_mode = 0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 200.0
-offset_bottom = 58.0
+offset_left = 62.0
+offset_top = 137.0
+offset_right = 252.0
+offset_bottom = 185.0
 theme_override_constants/separation = 5

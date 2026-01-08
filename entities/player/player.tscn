@@ -1,28 +1,50 @@
-[gd_scene load_steps=6 format=3 uid="uid://bdtfhmu4iri7d"]
+[gd_scene load_steps=10 format=3 uid="uid://bdtfhmu4iri7d"]
 
 [ext_resource type="Script" uid="uid://jdnqf73q1f45" path="res://entities/player/player.gd" id="1_bls4j"]
+[ext_resource type="Script" uid="uid://dwv4tuaevbmty" path="res://entities/player/player_controller.gd" id="2_26q78"]
 [ext_resource type="SpriteFrames" uid="uid://cemugkfayrrio" path="res://entities/player/animacion_jugador.tres" id="2_bls4j"]
+[ext_resource type="Script" uid="uid://o2yt14tb6gos" path="res://entities/player/player_visual.gd" id="3_bectd"]
 [ext_resource type="AudioStream" uid="uid://b5v20vl4cuax0" path="res://assets/sounds/sfx/salto.mp3" id="3_salto"]
 [ext_resource type="AudioStream" uid="uid://c4tmtgg6kymg4" path="res://assets/sounds/sfx/morir.mp3" id="4_morir"]
+[ext_resource type="Script" uid="uid://bj33glkggd55e" path="res://entities/player/player_death.gd" id="5_wvtmh"]
+[ext_resource type="Script" uid="uid://ddxxm60vvwb34" path="res://entities/player/player_collision.gd" id="6_7thud"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8wb3s"]
 size = Vector2(34.5, 85)
 
-[node name="CharacterBody2D" type="CharacterBody2D" node_paths=PackedStringArray("animacion")]
+[node name="CharacterBody2D" type="CharacterBody2D" node_paths=PackedStringArray("controller", "visual", "death", "collision_mgr", "animacion")]
 collision_layer = 2
 script = ExtResource("1_bls4j")
+controller = NodePath("PlayerController")
+visual = NodePath("PlayerVisual")
+death = NodePath("PlayerDeath")
+collision_mgr = NodePath("PlayerCollision")
 animacion = NodePath("AnimatedSprite2D")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-texture_filter = 1
-position = Vector2(-495.55298, 237)
-scale = Vector2(0.89393973, 0.78125)
-sprite_frames = ExtResource("2_bls4j")
-animation = &"agacharse"
+[node name="PlayerController" type="Node" parent="." node_paths=PackedStringArray("visual", "collision_mgr", "death", "sonido_salto")]
+script = ExtResource("2_26q78")
+visual = NodePath("../PlayerVisual")
+collision_mgr = NodePath("../PlayerCollision")
+death = NodePath("../PlayerDeath")
+sonido_salto = NodePath("../SonidoSalto")
+metadata/_custom_type_script = "uid://dwv4tuaevbmty"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-495.05298, 239)
-shape = SubResource("RectangleShape2D_8wb3s")
+[node name="PlayerVisual" type="Node" parent="." node_paths=PackedStringArray("sprite")]
+script = ExtResource("3_bectd")
+sprite = NodePath("../AnimatedSprite2D")
+metadata/_custom_type_script = "uid://o2yt14tb6gos"
+
+[node name="PlayerDeath" type="Node" parent="." node_paths=PackedStringArray("controller", "visual", "sonido_morir")]
+script = ExtResource("5_wvtmh")
+controller = NodePath("../PlayerController")
+visual = NodePath("../PlayerVisual")
+sonido_morir = NodePath("../SonidoMorir")
+metadata/_custom_type_script = "uid://bj33glkggd55e"
+
+[node name="PlayerCollision" type="Node" parent="." node_paths=PackedStringArray("collision")]
+script = ExtResource("6_7thud")
+collision = NodePath("../CollisionShape2D")
+metadata/_custom_type_script = "uid://ddxxm60vvwb34"
 
 [node name="SonidoSalto" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("3_salto")
@@ -32,3 +54,14 @@ bus = &"SFX"
 process_mode = 3
 stream = ExtResource("4_morir")
 bus = &"SFX"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-495.05298, 239)
+shape = SubResource("RectangleShape2D_8wb3s")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(-495.55298, 237)
+scale = Vector2(0.89393973, 0.78125)
+sprite_frames = ExtResource("2_bls4j")
+animation = &"agacharse"

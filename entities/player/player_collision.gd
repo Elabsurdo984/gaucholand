@@ -12,7 +12,7 @@ var posicion_original: Vector2
 # ============================================================
 # REFERENCIAS
 # ============================================================
-@onready var collision: CollisionShape2D = $"../CollisionShape2D"
+@export var collision: CollisionShape2D
 
 # ============================================================
 # LIFECYCLE

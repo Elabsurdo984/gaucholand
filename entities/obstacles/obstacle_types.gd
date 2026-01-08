@@ -40,7 +40,7 @@ static func get_config(tipo: Tipo) -> Dictionary:
 			"animacion": "tero",
 			"escala": Vector2(1, 1),
 			"colision_size": Vector2(20, 16),
-			"offset_y": -80.0,  # Vuela más alto
+			"offset_y": -90.0,  # Vuela más alto
 			"nombre": "tero"
 		}
 	}

@@ -2,8 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://bo6qsr3xp5wro" path="res://scenes/levels/nivel.tscn" id="1_e1xdh"]
 [ext_resource type="PackedScene" uid="uid://bdtfhmu4iri7d" path="res://entities/player/player.tscn" id="2_aeo3s"]
-[ext_resource type="PackedScene" path="res://scenes/puntaje/ui_puntaje.tscn" id="3_aeo3s"]
-[ext_resource type="PackedScene" path="res://scenes/pause_menu/pause_menu.tscn" id="4_pause"]
+[ext_resource type="PackedScene" uid="uid://b4dif1v6rk7da" path="res://ui/menus/pause_menu/pause_menu.tscn" id="3_j3qq6"]
+[ext_resource type="PackedScene" uid="uid://jogtmqw0kivv" path="res://ui/hud/score_display.tscn" id="4_ibn63"]
 
 [node name="Node2D" type="Node2D"]
 
@@ -13,10 +13,8 @@
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
-[node name="UiPuntaje" parent="." instance=ExtResource("3_aeo3s")]
-offset_left = -575.0
-offset_top = -326.0
-offset_right = -575.0
-offset_bottom = -326.0
+[node name="UiPuntaje" parent="." instance=ExtResource("4_ibn63")]
+offset_left = -643.0
+offset_right = -643.0
 
-[node name="PauseMenu" parent="." instance=ExtResource("4_pause")]
+[node name="PauseMenu" parent="." instance=ExtResource("3_j3qq6")]
