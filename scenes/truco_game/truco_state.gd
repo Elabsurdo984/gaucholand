@@ -17,6 +17,7 @@ var resultados_rondas: Array[int] = [0, 0, 0]
 
 # Estado de apuestas (managed by TrucoBetting separately, but tracked for context if needed)
 # Por ahora delegamos apuestas a TrucoBetting y aquí solo guardamos puntos totales
+var envido_cantado: bool = false
 
 func agregar_puntos_jugador(puntos: int) -> void:
 	puntos_jugador += puntos
@@ -36,6 +37,7 @@ func resetear_mano() -> void:
 	resultados_rondas = [0, 0, 0]
 	carta_jugada_jugador = null
 	carta_jugada_muerte = null
+	envido_cantado = false
 
 func resetear_partida() -> void:
 	puntos_jugador = 0

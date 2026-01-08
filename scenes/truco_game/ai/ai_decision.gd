@@ -28,12 +28,13 @@ func calcular_fuerza_mano(cartas: Array) -> float:
 	return suma_valores / cartas.size()
 
 func decidir_accion_turno(estrategia: int, state: TrucoState, evaluacion: Dictionary, betting: TrucoBetting) -> Dictionary:
-	if state.ronda_actual == 1 and betting.nivel_actual == TrucoBetting.NivelApuesta.NINGUNO: 
+	# Solo cantar envido si: es primera ronda, no hay truco, y NO se cantó envido ya
+	if state.ronda_actual == 1 and not state.envido_cantado and betting.nivel_actual == TrucoBetting.NivelApuesta.NINGUNO:
 		if _debe_cantar_envido(estrategia, evaluacion.envido):
-			return { 
-				"tipo": "cantar_envido", 
+			return {
+				"tipo": "cantar_envido",
 				"envido_puntos": evaluacion.envido,
-				"tipo_envido": EnvidoSystem.TipoEnvido.ENVIDO 
+				"tipo_envido": EnvidoSystem.TipoEnvido.ENVIDO
 			}
 	
 	if _debe_cantar_truco(estrategia, evaluacion.fuerza, betting):

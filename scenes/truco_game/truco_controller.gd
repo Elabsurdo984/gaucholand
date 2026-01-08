@@ -210,6 +210,8 @@ func _on_ai_accion(accion: Dictionary) -> void:
 		"jugar_carta":
 			procesar_jugada("muerte", accion.carta)
 		"cantar_envido":
+			# Marcar que se cantó envido para evitar que se vuelva a cantar
+			state.envido_cantado = true
 			envido_sys.cantar_envido(accion.tipo_envido, "muerte")
 			estado_respuesta_pendiente = "envido"
 			ui.mostrar_dialogo_respuesta("envido")
@@ -225,7 +227,28 @@ func _on_ai_accion(accion: Dictionary) -> void:
 # MANEJO DE APUESTAS (UI -> Controller -> Systems)
 # ============================================================
 func _on_ui_envido() -> void:
+	# Validar que no se haya cantado envido ya
+	if state.envido_cantado:
+		ui.mostrar_mensaje("Ya se cantó envido en esta mano")
+		return
+
+	# Validar que sea primera ronda
+	if state.ronda_actual > 1:
+		ui.mostrar_mensaje("El envido solo se puede cantar en la primera ronda")
+		return
+
+	# Marcar envido como cantado
+	state.envido_cantado = true
+
+	# Deshabilitar controles mientras se resuelve
+	ui.deshabilitar_controles()
+
+	# Cantar envido
 	envido_sys.cantar_envido(EnvidoSystem.TipoEnvido.ENVIDO, "jugador")
+	ui.mostrar_mensaje("Cantaste Envido!")
+
+	# La IA decide si acepta o no (por ahora siempre acepta)
+	await get_tree().create_timer(1.0).timeout
 	_on_ai_responde_envido(true)
 
 func _on_ui_truco() -> void:
@@ -235,20 +258,37 @@ func _on_ui_truco() -> void:
 # --- RESPUESTAS DEL JUGADOR ---
 func _on_player_responde_envido(acepta: bool) -> void:
 	if estado_respuesta_pendiente != "envido": return
-	
+
+	# Limpiar estado de respuesta pendiente primero
+	estado_respuesta_pendiente = ""
+	ui.ocultar_respuestas()
+
 	if acepta:
+		ui.mostrar_mensaje("¡Quiero!")
+		await get_tree().create_timer(1.0).timeout
+
 		var pts_jug = envido_sys.calcular_envido(state.cartas_jugador)
 		var pts_muerte = envido_sys.calcular_envido(state.cartas_muerte)
+
+		# Mostrar los puntos de cada uno
+		ui.mostrar_mensaje("Tu envido: %d" % pts_jug)
+		await get_tree().create_timer(1.5).timeout
+		ui.mostrar_mensaje("Envido de La Muerte: %d" % pts_muerte)
+		await get_tree().create_timer(1.5).timeout
+
 		envido_sys.resolver_envido(pts_jug, pts_muerte)
+		await get_tree().create_timer(1.5).timeout
 	else:
+		ui.mostrar_mensaje("No quiero")
+		await get_tree().create_timer(1.0).timeout
 		state.agregar_puntos_muerte(1)
 		ui.actualizar_puntos(state.puntos_jugador, state.puntos_muerte)
-		ui.mostrar_mensaje("No quiero (1 pto para Muerte)")
-	
-	estado_respuesta_pendiente = ""
-	# Muerte cantó envido, ahora sigue jugando carta
-	if not es_turno_jugador:
-		ai.ejecutar_turno()
+		ui.mostrar_mensaje("La Muerte gana 1 punto")
+		await get_tree().create_timer(1.5).timeout
+
+	# Después de resolver el envido, continuar con el juego normal
+	# La muerte debe jugar su carta ahora
+	iniciar_turno()
 
 func _on_player_responde_truco(acepta: bool) -> void:
 	if estado_respuesta_pendiente != "truco": return
@@ -273,12 +313,29 @@ func _on_player_responde_truco(acepta: bool) -> void:
 # --- RESPUESTAS DE IA (Simuladas por ahora) ---
 func _on_ai_responde_envido(acepta: bool) -> void:
 	if acepta:
+		ui.mostrar_mensaje("La Muerte dijo: ¡Quiero!")
+		await get_tree().create_timer(1.0).timeout
+
 		var pts_jug = envido_sys.calcular_envido(state.cartas_jugador)
 		var pts_muerte = envido_sys.calcular_envido(state.cartas_muerte)
+
+		# Mostrar los puntos de cada uno
+		ui.mostrar_mensaje("Tu envido: %d" % pts_jug)
+		await get_tree().create_timer(1.5).timeout
+		ui.mostrar_mensaje("Envido de La Muerte: %d" % pts_muerte)
+		await get_tree().create_timer(1.5).timeout
+
 		envido_sys.resolver_envido(pts_jug, pts_muerte)
 	else:
+		ui.mostrar_mensaje("La Muerte dijo: No quiero")
+		await get_tree().create_timer(1.0).timeout
 		state.agregar_puntos_jugador(1)
 		ui.actualizar_puntos(state.puntos_jugador, state.puntos_muerte)
+		ui.mostrar_mensaje("Ganaste 1 punto por el envido rechazado")
+
+	# Rehabilitar controles después de resolver el envido
+	await get_tree().create_timer(1.0).timeout
+	ui.habilitar_controles(state, betting)
 
 func _on_ai_responde_truco(acepta: bool) -> void:
 	if acepta:
