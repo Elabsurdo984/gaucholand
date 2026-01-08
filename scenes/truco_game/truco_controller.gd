@@ -139,14 +139,14 @@ func evaluar_ronda() -> void:
 	var ganador = rules.determinar_ganador_ronda(state.carta_jugada_jugador, state.carta_jugada_muerte)
 	state.registrar_resultado_ronda(ganador)
 
-	# Mostrar resultado de la ronda
+	# Mostrar resultado de la ronda con duración más larga
 	match ganador:
 		TrucoRules.GANADOR_JUGADOR:
-			ui.mostrar_mensaje("¡Ganaste la ronda %d!" % (state.ronda_actual - 1))
+			ui.mostrar_mensaje("¡Ganaste la ronda %d!" % (state.ronda_actual - 1), 4.0)
 		TrucoRules.GANADOR_MUERTE:
-			ui.mostrar_mensaje("La Muerte ganó la ronda %d" % (state.ronda_actual - 1))
+			ui.mostrar_mensaje("La Muerte ganó la ronda %d" % (state.ronda_actual - 1), 4.0)
 		TrucoRules.EMPATE:
-			ui.mostrar_mensaje("Ronda %d: Empate (parda)" % (state.ronda_actual - 1))
+			ui.mostrar_mensaje("Ronda %d: Empate (parda)" % (state.ronda_actual - 1), 4.0)
 
 	# Limpiar cartas jugadas
 	state.carta_jugada_jugador = null
@@ -169,27 +169,27 @@ func finalizar_mano() -> void:
 	match ganador_mano:
 		TrucoRules.GANADOR_JUGADOR:
 			state.agregar_puntos_jugador(puntos_ganados)
-			ui.mostrar_mensaje("¡Ganaste la mano! (+%d puntos)" % puntos_ganados)
+			ui.mostrar_mensaje("¡Ganaste la mano! (+%d puntos)" % puntos_ganados, 5.0)
 		TrucoRules.GANADOR_MUERTE:
 			state.agregar_puntos_muerte(puntos_ganados)
-			ui.mostrar_mensaje("La Muerte ganó la mano (+%d puntos)" % puntos_ganados)
+			ui.mostrar_mensaje("La Muerte ganó la mano (+%d puntos)" % puntos_ganados, 5.0)
 
 	ui.actualizar_puntos(state.puntos_jugador, state.puntos_muerte)
 
 	# Verificar si alguien ganó la partida (30 puntos)
 	if state.puntos_jugador >= 30:
-		ui.mostrar_mensaje("¡VICTORIA! Derrotaste a La Muerte")
-		await get_tree().create_timer(3.0).timeout
+		ui.mostrar_mensaje("¡VICTORIA! Derrotaste a La Muerte", 6.0)
+		await get_tree().create_timer(6.0).timeout
 		game_over()
 		return
 	elif state.puntos_muerte >= 30:
-		ui.mostrar_mensaje("DERROTA... La Muerte te venció")
-		await get_tree().create_timer(3.0).timeout
+		ui.mostrar_mensaje("DERROTA... La Muerte te venció", 6.0)
+		await get_tree().create_timer(6.0).timeout
 		game_over()
 		return
 
 	# Continuar con nueva mano
-	await get_tree().create_timer(2.0).timeout
+	await get_tree().create_timer(3.0).timeout
 	comenzar_nueva_mano()
 
 func _nombre_palo(palo: int) -> String:
@@ -245,10 +245,10 @@ func _on_ui_envido() -> void:
 
 	# Cantar envido
 	envido_sys.cantar_envido(EnvidoSystem.TipoEnvido.ENVIDO, "jugador")
-	ui.mostrar_mensaje("Cantaste Envido!")
+	ui.mostrar_mensaje("¡Cantaste Envido!", 2.5)
 
 	# La IA decide si acepta o no (por ahora siempre acepta)
-	await get_tree().create_timer(1.0).timeout
+	await get_tree().create_timer(2.5).timeout
 	_on_ai_responde_envido(true)
 
 func _on_ui_truco() -> void:
@@ -262,8 +262,8 @@ func _on_ui_truco() -> void:
 	# Deshabilitar controles mientras se resuelve
 	ui.deshabilitar_controles()
 
-	ui.mostrar_mensaje("¡Cantaste Truco!")
-	await get_tree().create_timer(1.0).timeout
+	ui.mostrar_mensaje("¡Cantaste Truco!", 2.5)
+	await get_tree().create_timer(2.5).timeout
 
 	# La IA decide si acepta o no (por ahora siempre acepta)
 	_on_ai_responde_truco(true)
@@ -277,27 +277,27 @@ func _on_player_responde_envido(acepta: bool) -> void:
 	ui.ocultar_respuestas()
 
 	if acepta:
-		ui.mostrar_mensaje("¡Quiero!")
-		await get_tree().create_timer(1.0).timeout
+		ui.mostrar_mensaje("¡Quiero!", 2.5)
+		await get_tree().create_timer(2.5).timeout
 
 		var pts_jug = envido_sys.calcular_envido(state.cartas_jugador)
 		var pts_muerte = envido_sys.calcular_envido(state.cartas_muerte)
 
-		# Mostrar los puntos de cada uno
-		ui.mostrar_mensaje("Tu envido: %d" % pts_jug)
-		await get_tree().create_timer(1.5).timeout
-		ui.mostrar_mensaje("Envido de La Muerte: %d" % pts_muerte)
-		await get_tree().create_timer(1.5).timeout
+		# Mostrar los puntos de cada uno con más tiempo
+		ui.mostrar_mensaje("Tu envido: %d" % pts_jug, 3.5)
+		await get_tree().create_timer(3.5).timeout
+		ui.mostrar_mensaje("Envido de La Muerte: %d" % pts_muerte, 3.5)
+		await get_tree().create_timer(3.5).timeout
 
 		envido_sys.resolver_envido(pts_jug, pts_muerte)
-		await get_tree().create_timer(1.5).timeout
+		await get_tree().create_timer(2.0).timeout
 	else:
-		ui.mostrar_mensaje("No quiero")
-		await get_tree().create_timer(1.0).timeout
+		ui.mostrar_mensaje("No quiero", 2.5)
+		await get_tree().create_timer(2.5).timeout
 		state.agregar_puntos_muerte(1)
 		ui.actualizar_puntos(state.puntos_jugador, state.puntos_muerte)
-		ui.mostrar_mensaje("La Muerte gana 1 punto")
-		await get_tree().create_timer(1.5).timeout
+		ui.mostrar_mensaje("La Muerte gana 1 punto", 3.5)
+		await get_tree().create_timer(3.5).timeout
 
 	# Después de resolver el envido, continuar con el juego normal
 	# La muerte debe jugar su carta ahora
@@ -312,70 +312,70 @@ func _on_player_responde_truco(acepta: bool) -> void:
 
 	if acepta:
 		betting.aceptar_apuesta()
-		ui.mostrar_mensaje("¡Quiero!")
-		await get_tree().create_timer(1.0).timeout
+		ui.mostrar_mensaje("¡Quiero!", 2.5)
+		await get_tree().create_timer(2.5).timeout
 
 		# Continuar con el juego - la muerte debe jugar su carta
 		iniciar_turno()
 	else:
-		ui.mostrar_mensaje("No quiero")
-		await get_tree().create_timer(1.0).timeout
+		ui.mostrar_mensaje("No quiero", 2.5)
+		await get_tree().create_timer(2.5).timeout
 
 		var pts = betting.rechazar_apuesta()
 		state.agregar_puntos_muerte(pts)
 		ui.actualizar_puntos(state.puntos_jugador, state.puntos_muerte)
-		ui.mostrar_mensaje("La Muerte gana %d puntos" % pts)
-		await get_tree().create_timer(1.5).timeout
+		ui.mostrar_mensaje("La Muerte gana %d puntos" % pts, 4.0)
+		await get_tree().create_timer(4.0).timeout
 		finalizar_mano()
 
 # --- RESPUESTAS DE IA (Simuladas por ahora) ---
 func _on_ai_responde_envido(acepta: bool) -> void:
 	if acepta:
-		ui.mostrar_mensaje("La Muerte dijo: ¡Quiero!")
-		await get_tree().create_timer(1.0).timeout
+		ui.mostrar_mensaje("La Muerte dijo: ¡Quiero!", 2.5)
+		await get_tree().create_timer(2.5).timeout
 
 		var pts_jug = envido_sys.calcular_envido(state.cartas_jugador)
 		var pts_muerte = envido_sys.calcular_envido(state.cartas_muerte)
 
-		# Mostrar los puntos de cada uno
-		ui.mostrar_mensaje("Tu envido: %d" % pts_jug)
-		await get_tree().create_timer(1.5).timeout
-		ui.mostrar_mensaje("Envido de La Muerte: %d" % pts_muerte)
-		await get_tree().create_timer(1.5).timeout
+		# Mostrar los puntos de cada uno con más tiempo
+		ui.mostrar_mensaje("Tu envido: %d" % pts_jug, 3.5)
+		await get_tree().create_timer(3.5).timeout
+		ui.mostrar_mensaje("Envido de La Muerte: %d" % pts_muerte, 3.5)
+		await get_tree().create_timer(3.5).timeout
 
 		envido_sys.resolver_envido(pts_jug, pts_muerte)
 	else:
-		ui.mostrar_mensaje("La Muerte dijo: No quiero")
-		await get_tree().create_timer(1.0).timeout
+		ui.mostrar_mensaje("La Muerte dijo: No quiero", 2.5)
+		await get_tree().create_timer(2.5).timeout
 		state.agregar_puntos_jugador(1)
 		ui.actualizar_puntos(state.puntos_jugador, state.puntos_muerte)
-		ui.mostrar_mensaje("Ganaste 1 punto por el envido rechazado")
+		ui.mostrar_mensaje("Ganaste 1 punto por el envido rechazado", 3.5)
 
 	# Rehabilitar controles después de resolver el envido
-	await get_tree().create_timer(1.0).timeout
+	await get_tree().create_timer(2.0).timeout
 	ui.habilitar_controles(state, betting)
 
 func _on_ai_responde_truco(acepta: bool) -> void:
 	if acepta:
 		betting.aceptar_apuesta()
-		ui.mostrar_mensaje("La Muerte dijo: ¡Quiero!")
-		await get_tree().create_timer(1.0).timeout
+		ui.mostrar_mensaje("La Muerte dijo: ¡Quiero!", 3.0)
+		await get_tree().create_timer(3.0).timeout
 		# Rehabilitar controles y continuar jugando
 		ui.habilitar_controles(state, betting)
 	else:
 		betting.rechazar_apuesta()
-		ui.mostrar_mensaje("La Muerte dijo: No quiero")
-		await get_tree().create_timer(1.0).timeout
+		ui.mostrar_mensaje("La Muerte dijo: No quiero", 3.0)
+		await get_tree().create_timer(3.0).timeout
 		finalizar_mano()
 
 func _on_envido_resuelto(ganador: String, puntos: int) -> void:
 	if ganador == "jugador":
 		state.agregar_puntos_jugador(puntos)
-		ui.mostrar_mensaje("Ganaste el envido (+%d)" % puntos)
+		ui.mostrar_mensaje("¡Ganaste el envido! (+%d puntos)" % puntos, 4.5)
 	else:
 		state.agregar_puntos_muerte(puntos)
-		ui.mostrar_mensaje("La Muerte ganó el envido (+%d)" % puntos)
-	
+		ui.mostrar_mensaje("La Muerte ganó el envido (+%d puntos)" % puntos, 4.5)
+
 	ui.actualizar_puntos(state.puntos_jugador, state.puntos_muerte)
 
 func _on_apuesta_aceptada() -> void: pass

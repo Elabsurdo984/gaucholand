@@ -65,11 +65,11 @@ func actualizar_puntos(puntos_jugador: int, puntos_muerte: int) -> void:
 	if lbl_puntos_jugador: lbl_puntos_jugador.text = "Jugador: %d" % puntos_jugador
 	if lbl_puntos_muerte: lbl_puntos_muerte.text = "Muerte: %d" % puntos_muerte
 
-func mostrar_mensaje(texto: String, duracion: float = 2.0) -> void:
+func mostrar_mensaje(texto: String, duracion: float = 3.5) -> void:
 	if lbl_mensaje:
 		lbl_mensaje.text = texto
 		lbl_mensaje.visible = true
-		
+
 		# Ocultar automáticamente si hay duración
 		if duracion > 0:
 			await get_tree().create_timer(duracion).timeout
