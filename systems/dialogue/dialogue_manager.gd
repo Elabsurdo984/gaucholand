@@ -4,6 +4,10 @@
 
 extends Node
 
+#func _ready() -> void:
+	#set_process(true)
+	#print("Dialogue Manager Cargado")
+
 #region SIGNALS
 signal dialogue_started()
 signal dialogue_line_started(character_name: String, text: String)
@@ -24,9 +28,9 @@ enum State {
 
 #region CONFIGURACIÓN
 @export_group("Typewriter Settings")
-@export var typing_speed: float = 50.0  # Caracteres por segundo
+@export var typing_speed: float = 30.0  # Caracteres por segundo
 @export var can_skip_typing: bool = true  # Permitir saltar el typing
-@export var punctuation_delay: float = 0.15  # Pausa extra en puntuación
+@export var punctuation_delay: float = 0.5  # Pausa extra en puntuación
 
 @export_group("Input Settings")
 @export var advance_actions: String = "skipear"  # Teclas para avanzar
@@ -42,10 +46,16 @@ var _dialogues: Array = []  # Array de diálogos
 var _current_index: int = -1  # Índice actual
 var _current_state: State = State.IDLE
 var _current_text: String = ""  # Texto completo de la línea actual
+var _current_text_clean: String = ""  # Texto sin etiquetas para mostrar
 var _displayed_text: String = ""  # Texto mostrado actualmente
 var _typing_timer: float = 0.0
 var _char_index: int = 0
+var _pause_timer: float = 0.0  # Timer para pausas de etiquetas
+var _is_paused: bool = false  # Si está en pausa por etiqueta
+var _stop_positions: Array = []  # Posiciones donde hay [stop] en el texto limpio
 #endregion
+
+
 
 #region MÉTODOS PÚBLICOS
 
@@ -114,11 +124,14 @@ func _show_line(index: int) -> void:
 	if name_label:
 		name_label.text = dialogue.get("character", "???")
 
-	# Preparar texto
+	# Preparar texto y procesar etiquetas
 	_current_text = dialogue.get("text", "")
+	_process_tags(_current_text)
 	_displayed_text = ""
 	_char_index = 0
 	_typing_timer = 0.0
+	_pause_timer = 0.0
+	_is_paused = false
 
 	# Ocultar indicador mientras escribe
 	if continue_indicator:
@@ -128,8 +141,31 @@ func _show_line(index: int) -> void:
 	_current_state = State.TYPING
 
 	# Emitir señal
-	dialogue_line_started.emit(dialogue.get("character", ""), _current_text)
+	dialogue_line_started.emit(dialogue.get("character", ""), _current_text_clean)
 	typing_started.emit()
+
+## Procesa las etiquetas en el texto
+## Extrae [stop] y guarda sus posiciones, retorna texto limpio
+func _process_tags(text: String) -> void:
+	_stop_positions.clear()
+	_current_text_clean = ""
+
+	var position = 0
+	var i = 0
+
+	while i < text.length():
+		# Buscar etiqueta [stop]
+		if text.substr(i, 6) == "[stop]":
+			# Guardar la posición en el texto limpio donde debería pausar
+			_stop_positions.append(position)
+			i += 6  # Saltar la etiqueta
+		else:
+			# Agregar el carácter al texto limpio
+			_current_text_clean += text[i]
+			position += 1
+			i += 1
+
+	print("🏷️ Etiquetas procesadas: ", _stop_positions.size(), " pausas en: ", _stop_positions)
 
 func _process(delta: float) -> void:
 	match _current_state:
@@ -139,24 +175,42 @@ func _process(delta: float) -> void:
 			_process_input()
 
 func _process_typing(delta: float) -> void:
+	# Debug Temporal
+	if _char_index == 0:
+		print("Punctuation delay: ", punctuation_delay)
+	
+	# Si está en pausa por [stop], esperar
+	if _is_paused:
+		_pause_timer += delta
+		print("⏸️ Pausado - timer: ", _pause_timer, " / delay: ", punctuation_delay)
+		if _pause_timer >= punctuation_delay:
+			_is_paused = false
+			_pause_timer = 0.0
+		return
+
 	_typing_timer += delta
 
 	# Calcular cuántos caracteres mostrar
 	var chars_to_show = int(_typing_timer * typing_speed)
 
-	# Limitar al tamaño del texto
-	chars_to_show = min(chars_to_show, _current_text.length())
+	# Limitar al tamaño del texto limpio
+	chars_to_show = min(chars_to_show, _current_text_clean.length())
 
 	# Actualizar texto mostrado
 	if chars_to_show > _char_index:
 		_char_index = chars_to_show
-		_displayed_text = _current_text.substr(0, _char_index)
+		_displayed_text = _current_text_clean.substr(0, _char_index)
 
 		if text_label:
 			text_label.text = _displayed_text
 
+		# Verificar si llegamos a una posición de [stop]
+		if _char_index in _stop_positions:
+			_is_paused = true
+			_pause_timer = 0.0
+
 		# Verificar si terminó de escribir
-		if _char_index >= _current_text.length():
+		if _char_index >= _current_text_clean.length():
 			_finish_typing()
 
 func _finish_typing() -> void:
@@ -170,9 +224,10 @@ func _finish_typing() -> void:
 	dialogue_line_finished.emit()
 
 func _complete_typing() -> void:
-	# Mostrar todo el texto inmediatamente
-	_char_index = _current_text.length()
-	_displayed_text = _current_text
+	# Mostrar todo el texto inmediatamente (texto limpio sin etiquetas)
+	_char_index = _current_text_clean.length()
+	_displayed_text = _current_text_clean
+	_is_paused = false
 
 	if text_label:
 		text_label.text = _displayed_text

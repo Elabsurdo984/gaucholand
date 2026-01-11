@@ -27,11 +27,12 @@ grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
 [node name="MuerteSprite" type="Sprite2D" parent="." unique_id=775933749]
-position = Vector2(530.125, 246.24998)
-scale = Vector2(0.31549987, 0.31899998)
+position = Vector2(556.625, 270.75)
+scale = Vector2(0.42149997, 0.417)
 texture = ExtResource("2_jg1gj")
 
 [node name="DialogueUI" parent="." unique_id=2055404236 instance=ExtResource("3_jabcv")]
 
 [node name="DialogueManager" type="Node" parent="." unique_id=1280444963]
 script = ExtResource("4_jg1gj")
+punctuation_delay = 5.0
