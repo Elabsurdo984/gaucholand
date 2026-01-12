@@ -36,14 +36,14 @@ enum State {
 @export var advance_actions: String = "skipear"  # Teclas para avanzar
 
 @export_group("UI References")
-@export var name_label: Label  # Label del nombre del personaje
-@export var text_label: Label  # Label del texto
-@export var continue_indicator: Label  # Indicador de "continuar"
+@export var name_label: Label
+@export var text_label: Label 
+@export var continue_indicator: Label
 #endregion
 
 #region VARIABLES PRIVADAS
-var _dialogues: Array = []  # Array de diálogos
-var _current_index: int = -1  # Índice actual
+var _dialogues: Array = []  
+var _current_index: int = -1
 var _current_state: State = State.IDLE
 var _current_text: String = ""  # Texto completo de la línea actual
 var _current_text_clean: String = ""  # Texto sin etiquetas para mostrar

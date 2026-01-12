@@ -5,7 +5,7 @@ extends Control
 #region REFERENCIAS
 @export var muerte_sprite: Sprite2D
 @export var dialogue_ui_scene: CanvasLayer
-@export var dialogue_manager: Node
+var dialogue_manager: Node  # Se obtiene dinámicamente de dialogue_ui_scene
 #endregion
 
 #region CONFIGURACIÓN

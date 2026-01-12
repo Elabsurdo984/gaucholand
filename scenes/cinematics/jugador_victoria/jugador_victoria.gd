@@ -1,4 +1,5 @@
-# cinematica_inicio.gd
+# jugador_victoria.gd
+# Cinemática cuando el Jugador gana el Truco
 extends Control
 
 #region REFERENCIAS
@@ -9,7 +10,7 @@ var dialogue_manager: Node  # Se obtiene dinámicamente de dialogue_ui_scene
 #endregion
 
 #region CONFIGURACIÓN
-@export_file("*.csv") var dialogue_file: String = "res://data/dialogues/cinematica_inicio.csv"
+@export_file("*.csv") var dialogue_file: String = "res://data/dialogues/jugador_gana_truco.csv"
 #endregion
 
 #region DIÁLOGOS
@@ -26,7 +27,7 @@ func _ready():
 	if dialogue_ui_scene:
 		dialogue_manager = dialogue_ui_scene.get_dialogue_manager()
 	else:
-		push_error("❌ Cinemática: No se encontró dialogue_ui_scene")
+		push_error("❌ Jugador Victoria: No se encontró dialogue_ui_scene")
 		return
 
 	# Cargar diálogos desde CSV
@@ -35,7 +36,7 @@ func _ready():
 
 	# Validar que se cargaron correctamente
 	if dialogos.is_empty():
-		push_error("❌ Cinemática: No se pudieron cargar los diálogos desde ", dialogue_file)
+		push_error("❌ Jugador Victoria: No se pudieron cargar los diálogos desde ", dialogue_file)
 		return
 
 	print("✅ Diálogos cargados: ", dialogos.size(), " líneas")
@@ -44,13 +45,15 @@ func _ready():
 	if dialogue_ui_scene:
 		dialogue_ui_scene.ocultar()
 
-	# Inicialmente la muerte está invisible
+	# Los sprites están visibles desde el inicio
 	if muerte_sprite:
-		muerte_sprite.modulate.a = 0.0
+		muerte_sprite.modulate.a = 1.0
+
+	if gaucho_sprite:
+		gaucho_sprite.modulate.a = 1.0
 
 	# Conectar señales del DialogueManager
 	if dialogue_manager:
-		dialogue_manager.dialogue_line_started.connect(_on_dialogue_line_started)
 		dialogue_manager.dialogue_ended.connect(_on_dialogue_ended)
 
 	# Empezar la secuencia
@@ -62,12 +65,6 @@ func iniciar_cinematica():
 	# Esperar un momento antes de empezar
 	await get_tree().create_timer(1.0).timeout
 
-	# Hacer aparecer a la Muerte con efecto fade
-	await aparecer_muerte()
-
-	# Esperar un momento
-	await get_tree().create_timer(0.5).timeout
-
 	# Mostrar UI de diálogo
 	if dialogue_ui_scene:
 		dialogue_ui_scene.mostrar()
@@ -76,24 +73,11 @@ func iniciar_cinematica():
 	if dialogue_manager:
 		dialogue_manager.setup(dialogos)
 		dialogue_manager.start()
-
-func aparecer_muerte():
-	# Fade in de la Muerte
-	if muerte_sprite and is_instance_valid(muerte_sprite):
-		var tween = create_tween()
-		tween.tween_property(muerte_sprite, "modulate:a", 1.0, 1.5)
-		await tween.finished
-	else:
-		# Si no hay sprite, esperar el tiempo equivalente
-		await get_tree().create_timer(1.5).timeout
 #endregion
 
 #region CALLBACKS DEL DIALOGUE MANAGER
-func _on_dialogue_line_started(character_name: String, text: String):
-	print("💬 ", character_name, ": ", text)
-
 func _on_dialogue_ended():
-	print("🎬 Cinemática terminada - Iniciando gameplay...")
+	print("🎊 Jugador Victoria - Transicionando a pantalla de Continuará...")
 
 	# Ocultar UI de diálogo
 	if dialogue_ui_scene and is_instance_valid(dialogue_ui_scene):
@@ -102,6 +86,11 @@ func _on_dialogue_ended():
 	# Esperar un momento antes de transicionar
 	await get_tree().create_timer(0.5).timeout
 
-	# Transición al gameplay
-	get_tree().change_scene_to_file("res://scenes/levels/nivel_pampa.tscn")
+	# Fade out épico
+	var tween = create_tween()
+	tween.tween_property(self, "modulate:a", 0.0, 2.0)
+	await tween.finished
+
+	# Transición a pantalla de "Continuará..."
+	get_tree().change_scene_to_file("res://ui/screens/continuara/continuara.tscn")
 #endregion

@@ -4,10 +4,9 @@
 [ext_resource type="Texture2D" uid="uid://d3pvjosw4f1gm" path="res://assets/rancho/rancho_frente.png" id="2_f64kd"]
 [ext_resource type="Texture2D" uid="uid://cgn75kp8wndqb" path="res://assets/personajes/gaucho/personaje.png" id="2_gaucho"]
 [ext_resource type="Texture2D" uid="uid://b7sc77ig5pli5" path="res://assets/personajes/muerte/muerte.png" id="3_muerte"]
-[ext_resource type="Script" uid="uid://cns006pw7yk01" path="res://systems/dialogue/dialogue_manager.gd" id="6_78rrk"]
 [ext_resource type="PackedScene" uid="uid://b63kdsyhv35dw" path="res://ui/dialogue/dialogue_ui.tscn" id="6_jfbxj"]
 
-[node name="TransicionRancho" type="Control" node_paths=PackedStringArray("muerte_sprite", "gaucho_sprite", "rancho_sprite", "dialogue_ui_scene", "dialogue_manager")]
+[node name="TransicionRancho" type="Control" node_paths=PackedStringArray("muerte_sprite", "gaucho_sprite", "rancho_sprite", "dialogue_ui_scene")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,7 +18,6 @@ muerte_sprite = NodePath("Personajes/Muerte")
 gaucho_sprite = NodePath("Personajes/Gaucho")
 rancho_sprite = NodePath("Fondo/Rancho")
 dialogue_ui_scene = NodePath("DialogueUI")
-dialogue_manager = NodePath("DialogueManager")
 
 [node name="Fondo" type="CanvasLayer" parent="."]
 layer = -1
@@ -66,8 +64,5 @@ texture = ExtResource("2_gaucho")
 position = Vector2(829.99994, 417)
 scale = Vector2(0.586, 0.6)
 texture = ExtResource("3_muerte")
-
-[node name="DialogueManager" type="Node" parent="."]
-script = ExtResource("6_78rrk")
 
 [node name="DialogueUI" parent="." instance=ExtResource("6_jfbxj")]

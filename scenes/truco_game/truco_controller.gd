@@ -194,7 +194,8 @@ func finalizar_mano() -> void:
 	if state.puntos_jugador >= 30:
 		ui.mostrar_mensaje("¡VICTORIA! Derrotaste a La Muerte", 6.0)
 		await get_tree().create_timer(6.0).timeout
-		game_over()
+		# Transicionar a la cinemática de victoria
+		get_tree().change_scene_to_file("res://scenes/cinematics/jugador_victoria/jugador_victoria.tscn")
 		return
 	elif state.puntos_muerte >= 30:
 		ui.mostrar_mensaje("DERROTA... La Muerte te venció", 3.0)
