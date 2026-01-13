@@ -29,6 +29,14 @@ func _ready() -> void:
 	ai.truco_state = state
 	ai.truco_betting = betting
 
+	# Cargar estado guardado si existe (puntos anteriores)
+	if SaveManager:
+		var loaded_data = SaveManager.consume_pending_truco_state()
+		if not loaded_data.is_empty():
+			state.puntos_jugador = loaded_data.get("puntos_jugador", 0)
+			state.puntos_muerte = loaded_data.get("puntos_muerte", 0)
+			print("🃏 Truco: Puntos restaurados - Jugador: ", state.puntos_jugador, " | Muerte: ", state.puntos_muerte)
+
 	deck = Deck.new()
 	conectar_senales()
 	comenzar_nueva_mano()

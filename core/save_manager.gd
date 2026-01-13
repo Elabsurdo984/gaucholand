@@ -6,6 +6,11 @@ extends Node
 const SAVE_PATH: String = "user://savegame.json"
 
 # ============================================================
+# VARIABLES
+# ============================================================
+var pending_truco_state: Dictionary = {}
+
+# ============================================================
 # LIFECYCLE
 # ============================================================
 func _ready() -> void:
@@ -34,7 +39,8 @@ func save_game() -> void:
 		"scene": get_tree().current_scene.scene_file_path,
 		"score": {},
 		"lives": {},
-		"difficulty": {}
+		"difficulty": {},
+		"truco": {}
 	}
 	
 	# 1. Guardar Score
@@ -57,6 +63,16 @@ func save_game() -> void:
 			"velocidad": DifficultyManager.obtener_velocidad_actual(),
 			"nivel": DifficultyManager.obtener_nivel_actual()
 		}
+	
+	# 4. Guardar Truco (Si estamos en la escena de Truco)
+	var current_scene = get_tree().current_scene
+	if current_scene.name == "TrucoGame":
+		var state = current_scene.get_node_or_null("TrucoState")
+		if state:
+			save_data["truco"] = {
+				"puntos_jugador": state.puntos_jugador,
+				"puntos_muerte": state.puntos_muerte
+			}
 		
 	# Guardar en disco
 	var json_string = JSON.stringify(save_data)
@@ -96,7 +112,11 @@ func load_game() -> void:
 	# 1. Restaurar Datos (Managers)
 	_restaurar_datos(save_data)
 	
-	# 2. Cambiar Escena
+	# 2. Restaurar Truco (Guardar en memoria para que la escena lo consuma)
+	if save_data.has("truco") and not save_data["truco"].is_empty():
+		pending_truco_state = save_data["truco"]
+	
+	# 3. Cambiar Escena
 	if save_data.has("scene"):
 		var scene_path = save_data["scene"]
 		if SceneManager:
@@ -118,6 +138,13 @@ func delete_save() -> void:
 	if has_save():
 		DirAccess.remove_absolute(SAVE_PATH)
 		print("🗑️ Archivo de guardado eliminado.")
+
+## Consume el estado pendiente de Truco (llamado por TrucoController)
+func consume_pending_truco_state() -> Dictionary:
+	var data = pending_truco_state.duplicate()
+	pending_truco_state.clear()
+	return data
+
 
 # ============================================================
 # PRIVATE METHODS
