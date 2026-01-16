@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://cg8qfwclqtgqg"]
 
 [ext_resource type="Script" uid="uid://bkko3fma0py56" path="res://ui/menus/main_menu/menu_principal.gd" id="1_script"]
-[ext_resource type="AudioStream" uid="uid://bjt47j7c6qoog" path="res://assets/sounds/music/menu_music.mp3" id="2_8pqr8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
 bg_color = Color(0.12, 0.15, 0.1, 0.85)
@@ -332,9 +331,3 @@ theme_override_colors/font_color = Color(0.5, 0.5, 0.5, 1)
 theme_override_font_sizes/font_size = 14
 text = "v0.9.0a"
 horizontal_alignment = 2
-
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=637416682]
-stream = ExtResource("2_8pqr8")
-autoplay = true
-bus = &"Music"
-parameters/looping = true

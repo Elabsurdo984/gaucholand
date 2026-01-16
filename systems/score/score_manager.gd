@@ -11,7 +11,7 @@ signal objetivo_alcanzado()
 # ============================================================
 # CONSTANTES
 # ============================================================
-const OBJETIVO_MATES: int = 1  # Mates necesarios para ganar
+const OBJETIVO_MATES: int = 100  # Mates necesarios para ganar
 
 # ============================================================
 # VARIABLES

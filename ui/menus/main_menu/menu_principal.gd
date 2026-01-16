@@ -12,6 +12,9 @@ extends Control
 
 #region INICIALIZACIÓN
 func _ready():
+	# Reiniciar el estado del juego al volver al menú
+	if GameManager:
+		GameManager.reiniciar_juego()
 
 	# Conectar botones
 	if btn_jugar:

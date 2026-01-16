@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://b7sc77ig5pli5" path="res://assets/personajes/muerte/muerte.png" id="2_jg1gj"]
 [ext_resource type="Texture2D" uid="uid://chnepslcm6cjh" path="res://assets/personajes/muerte/muerte-guadaña-arriba.png" id="3_guadaña"]
 [ext_resource type="PackedScene" uid="uid://c5mpyrx5lka41" path="res://systems/dialogue/dialogue_ui.tscn" id="3_jabcv"]
+[ext_resource type="PackedScene" uid="uid://k8m0eg7dy0qd" path="res://ui/components/skip_button/skip_button.tscn" id="5_jabcv"]
 
 [node name="MuerteVictoria" type="Control" unique_id=384938792 node_paths=PackedStringArray("muerte_sprite", "muerte_guadaña_sprite", "dialogue_ui_scene")]
 layout_mode = 3
@@ -38,3 +39,7 @@ scale = Vector2(0.42149997, 0.417)
 texture = ExtResource("3_guadaña")
 
 [node name="DialogueUI" parent="." unique_id=2055404236 instance=ExtResource("3_jabcv")]
+
+[node name="SkipButton" parent="." unique_id=950174653 instance=ExtResource("5_jabcv")]
+layout_mode = 0
+target_scene = "res://ui/screens/game_over/game_over.tscn"

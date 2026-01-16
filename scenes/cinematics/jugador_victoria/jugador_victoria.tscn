@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cgn75kp8wndqb" path="res://assets/personajes/gaucho/personaje.png" id="2_gaucho"]
 [ext_resource type="Texture2D" uid="uid://b7sc77ig5pli5" path="res://assets/personajes/muerte/muerte.png" id="3_muerte"]
 [ext_resource type="PackedScene" uid="uid://c5mpyrx5lka41" path="res://systems/dialogue/dialogue_ui.tscn" id="4_dialogue"]
+[ext_resource type="PackedScene" uid="uid://k8m0eg7dy0qd" path="res://ui/components/skip_button/skip_button.tscn" id="5_hnm1s"]
 
 [node name="JugadorVictoria" type="Control" unique_id=916613018 node_paths=PackedStringArray("muerte_sprite", "gaucho_sprite", "dialogue_ui_scene")]
 layout_mode = 3
@@ -98,3 +99,7 @@ scale = Vector2(0.55, 0.6)
 texture = ExtResource("3_muerte")
 
 [node name="DialogueUI" parent="." unique_id=1589683407 instance=ExtResource("4_dialogue")]
+
+[node name="SkipButton" parent="." unique_id=950174653 instance=ExtResource("5_hnm1s")]
+layout_mode = 0
+target_scene = "res://ui/screens/continuara/continuara.tscn"

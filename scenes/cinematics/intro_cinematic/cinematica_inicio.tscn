@@ -1,11 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://412p70spc33s"]
+[gd_scene format=3 uid="uid://412p70spc33s"]
 
 [ext_resource type="Script" uid="uid://bcnbmbn8gcjah" path="res://scenes/cinematics/intro_cinematic/cinematica_inicio.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://cgn75kp8wndqb" path="res://assets/personajes/gaucho/personaje.png" id="2_gaucho"]
 [ext_resource type="Texture2D" uid="uid://b7sc77ig5pli5" path="res://assets/personajes/muerte/muerte.png" id="3_muerte"]
 [ext_resource type="PackedScene" uid="uid://b63kdsyhv35dw" path="res://ui/dialogue/dialogue_ui.tscn" id="5_kw1tm"]
+[ext_resource type="PackedScene" uid="uid://k8m0eg7dy0qd" path="res://ui/components/skip_button/skip_button.tscn" id="6_skip"]
 
-[node name="CinematicaInicio" type="Control" node_paths=PackedStringArray("muerte_sprite", "gaucho_sprite", "dialogue_ui_scene")]
+[node name="CinematicaInicio" type="Control" unique_id=89778253 node_paths=PackedStringArray("muerte_sprite", "gaucho_sprite", "dialogue_ui_scene")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,10 +18,10 @@ muerte_sprite = NodePath("Personajes/Muerte")
 gaucho_sprite = NodePath("Personajes/Gaucho")
 dialogue_ui_scene = NodePath("DialogueUI")
 
-[node name="Fondo" type="CanvasLayer" parent="."]
+[node name="Fondo" type="CanvasLayer" parent="." unique_id=456204]
 layer = -1
 
-[node name="Cielo" type="ColorRect" parent="Fondo"]
+[node name="Cielo" type="ColorRect" parent="Fondo" unique_id=744813393]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -28,7 +29,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.95, 0.6, 0.3, 1)
 
-[node name="CieloGradiente" type="ColorRect" parent="Fondo"]
+[node name="CieloGradiente" type="ColorRect" parent="Fondo" unique_id=9401420]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -37,7 +38,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.8, 0.3, 0.2, 1)
 
-[node name="Sol" type="ColorRect" parent="Fondo"]
+[node name="Sol" type="ColorRect" parent="Fondo" unique_id=1173701552]
 anchors_preset = -1
 anchor_left = 0.15
 anchor_top = 0.2
@@ -50,7 +51,7 @@ offset_bottom = 296.4
 pivot_offset = Vector2(60, 60)
 color = Color(1, 0.8, 0.3, 1)
 
-[node name="SolGlow" type="ColorRect" parent="Fondo/Sol"]
+[node name="SolGlow" type="ColorRect" parent="Fondo/Sol" unique_id=354801230]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -65,7 +66,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 0.7, 0.2, 0.3)
 
-[node name="Horizonte" type="ColorRect" parent="Fondo"]
+[node name="Horizonte" type="ColorRect" parent="Fondo" unique_id=650759786]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -75,7 +76,7 @@ grow_horizontal = 2
 grow_vertical = 0
 color = Color(0.15, 0.25, 0.1, 1)
 
-[node name="Pasto" type="ColorRect" parent="Fondo"]
+[node name="Pasto" type="ColorRect" parent="Fondo" unique_id=47228773]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -85,22 +86,26 @@ grow_horizontal = 2
 grow_vertical = 0
 color = Color(0.2, 0.3, 0.15, 1)
 
-[node name="ArbolSilueta" type="Polygon2D" parent="Fondo"]
+[node name="ArbolSilueta" type="Polygon2D" parent="Fondo" unique_id=1358944080]
 position = Vector2(1126.5, 319.18182)
 scale = Vector2(0.775, 0.6090909)
 color = Color(0.1, 0.1, 0.1, 0.8)
 polygon = PackedVector2Array(0, 0, -10, 100, -15, 150, -5, 150, 0, 200, 5, 150, 15, 150, 10, 100, 5, 50, 20, 20, 15, -10, 5, -5, 0, -20, -5, -5, -15, -10, -20, 20, -5, 50)
 
-[node name="Personajes" type="Node2D" parent="."]
+[node name="Personajes" type="Node2D" parent="." unique_id=1288065028]
 
-[node name="Gaucho" type="Sprite2D" parent="Personajes"]
+[node name="Gaucho" type="Sprite2D" parent="Personajes" unique_id=1297619255]
 position = Vector2(300, 450)
 scale = Vector2(2, 2)
 texture = ExtResource("2_gaucho")
 
-[node name="Muerte" type="Sprite2D" parent="Personajes"]
+[node name="Muerte" type="Sprite2D" parent="Personajes" unique_id=1570960116]
 position = Vector2(742, 380.00003)
 scale = Vector2(0.533, 0.59400004)
 texture = ExtResource("3_muerte")
 
-[node name="DialogueUI" parent="." instance=ExtResource("5_kw1tm")]
+[node name="DialogueUI" parent="." unique_id=719131303 instance=ExtResource("5_kw1tm")]
+
+[node name="SkipButton" parent="." unique_id=1430112143 instance=ExtResource("6_skip")]
+layout_mode = 0
+target_scene = "res://scenes/levels/nivel_pampa.tscn"

@@ -1,20 +1,20 @@
-[gd_scene load_steps=5 format=3 uid="uid://upalmee8y0v7"]
+[gd_scene format=3 uid="uid://upalmee8y0v7"]
 
 [ext_resource type="PackedScene" uid="uid://bo6qsr3xp5wro" path="res://scenes/levels/nivel.tscn" id="1_e1xdh"]
 [ext_resource type="PackedScene" uid="uid://bdtfhmu4iri7d" path="res://entities/player/player.tscn" id="2_aeo3s"]
 [ext_resource type="PackedScene" uid="uid://b4dif1v6rk7da" path="res://ui/menus/pause_menu/pause_menu.tscn" id="3_j3qq6"]
 [ext_resource type="PackedScene" uid="uid://jogtmqw0kivv" path="res://ui/hud/score_display.tscn" id="4_ibn63"]
 
-[node name="Node2D" type="Node2D"]
+[node name="Node2D" type="Node2D" unique_id=774512316]
 
-[node name="Node2D" parent="." instance=ExtResource("1_e1xdh")]
+[node name="Node2D" parent="." unique_id=34471980 instance=ExtResource("1_e1xdh")]
 
-[node name="CharacterBody2D" parent="." instance=ExtResource("2_aeo3s")]
+[node name="CharacterBody2D" parent="." unique_id=699270313 instance=ExtResource("2_aeo3s")]
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=56839298]
 
-[node name="UiPuntaje" parent="." instance=ExtResource("4_ibn63")]
+[node name="UiPuntaje" parent="." unique_id=382285636 instance=ExtResource("4_ibn63")]
 offset_left = -643.0
 offset_right = -643.0
 
-[node name="PauseMenu" parent="." instance=ExtResource("3_j3qq6")]
+[node name="PauseMenu" parent="." unique_id=1560402502 instance=ExtResource("3_j3qq6")]

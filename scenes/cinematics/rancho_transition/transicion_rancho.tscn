@@ -1,12 +1,13 @@
-[gd_scene load_steps=7 format=3 uid="uid://cd0ydfl8vbpiw"]
+[gd_scene format=3 uid="uid://cd0ydfl8vbpiw"]
 
 [ext_resource type="Script" uid="uid://tuhka7wgte74" path="res://scenes/cinematics/rancho_transition/transicion_rancho.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://d3pvjosw4f1gm" path="res://assets/rancho/rancho_frente.png" id="2_f64kd"]
 [ext_resource type="Texture2D" uid="uid://cgn75kp8wndqb" path="res://assets/personajes/gaucho/personaje.png" id="2_gaucho"]
 [ext_resource type="Texture2D" uid="uid://b7sc77ig5pli5" path="res://assets/personajes/muerte/muerte.png" id="3_muerte"]
+[ext_resource type="PackedScene" uid="uid://k8m0eg7dy0qd" path="res://ui/components/skip_button/skip_button.tscn" id="6_78rrk"]
 [ext_resource type="PackedScene" uid="uid://b63kdsyhv35dw" path="res://ui/dialogue/dialogue_ui.tscn" id="6_jfbxj"]
 
-[node name="TransicionRancho" type="Control" node_paths=PackedStringArray("muerte_sprite", "gaucho_sprite", "rancho_sprite", "dialogue_ui_scene")]
+[node name="TransicionRancho" type="Control" unique_id=249068675 node_paths=PackedStringArray("muerte_sprite", "gaucho_sprite", "rancho_sprite", "dialogue_ui_scene")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,10 +20,10 @@ gaucho_sprite = NodePath("Personajes/Gaucho")
 rancho_sprite = NodePath("Fondo/Rancho")
 dialogue_ui_scene = NodePath("DialogueUI")
 
-[node name="Fondo" type="CanvasLayer" parent="."]
+[node name="Fondo" type="CanvasLayer" parent="." unique_id=1678417819]
 layer = -1
 
-[node name="Cielo" type="ColorRect" parent="Fondo"]
+[node name="Cielo" type="ColorRect" parent="Fondo" unique_id=1007844402]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -30,7 +31,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.95, 0.7, 0.4, 1)
 
-[node name="CieloGradiente" type="ColorRect" parent="Fondo"]
+[node name="CieloGradiente" type="ColorRect" parent="Fondo" unique_id=1852449295]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -39,7 +40,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.3, 0.5, 0.8, 1)
 
-[node name="Pasto" type="ColorRect" parent="Fondo"]
+[node name="Pasto" type="ColorRect" parent="Fondo" unique_id=961714230]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -49,20 +50,24 @@ grow_horizontal = 2
 grow_vertical = 0
 color = Color(0.2, 0.3, 0.15, 1)
 
-[node name="Rancho" type="Sprite2D" parent="Fondo"]
+[node name="Rancho" type="Sprite2D" parent="Fondo" unique_id=926316628]
 position = Vector2(542, 296)
 texture = ExtResource("2_f64kd")
 
-[node name="Personajes" type="Node2D" parent="."]
+[node name="Personajes" type="Node2D" parent="." unique_id=1082320463]
 
-[node name="Gaucho" type="Sprite2D" parent="Personajes"]
+[node name="Gaucho" type="Sprite2D" parent="Personajes" unique_id=523691715]
 position = Vector2(200, 450)
 scale = Vector2(2, 2)
 texture = ExtResource("2_gaucho")
 
-[node name="Muerte" type="Sprite2D" parent="Personajes"]
+[node name="Muerte" type="Sprite2D" parent="Personajes" unique_id=1740784968]
 position = Vector2(829.99994, 417)
 scale = Vector2(0.586, 0.6)
 texture = ExtResource("3_muerte")
 
-[node name="DialogueUI" parent="." instance=ExtResource("6_jfbxj")]
+[node name="DialogueUI" parent="." unique_id=917049235 instance=ExtResource("6_jfbxj")]
+
+[node name="SkipButton" parent="." unique_id=950174653 instance=ExtResource("6_78rrk")]
+layout_mode = 0
+target_scene = "res://scenes/truco_game/truco.tscn"
