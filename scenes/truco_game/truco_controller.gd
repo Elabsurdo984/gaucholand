@@ -187,6 +187,15 @@ func evaluar_ronda() -> void:
 	state.carta_jugada_jugador = null
 	state.carta_jugada_muerte = null
 
+	# El ganador de la ronda juega primero en la siguiente
+	match ganador:
+		TrucoRules.GANADOR_JUGADOR:
+			es_turno_jugador = true
+		TrucoRules.GANADOR_MUERTE:
+			es_turno_jugador = false
+		TrucoRules.EMPATE:
+			pass  # En empate, mantiene el turno actual
+
 	# Verificar si terminó la mano
 	if rules.es_fin_de_mano(state.resultados_rondas, state.ronda_actual):
 		await get_tree().create_timer(2.0).timeout
@@ -283,9 +292,12 @@ func _on_ui_envido() -> void:
 	envido_sys.cantar_envido(EnvidoSystem.TipoEnvido.ENVIDO, "jugador")
 	ui.mostrar_mensaje("¡Cantaste Envido!", 2.5)
 
-	# La IA decide si acepta o no (por ahora siempre acepta)
+	# La IA evalúa su envido y decide si acepta
 	await get_tree().create_timer(2.5).timeout
-	_on_ai_responde_envido(true)
+	var envido_muerte = envido_sys.calcular_envido(state.cartas_originales_muerte)
+	# Acepta si tiene 25 o más puntos de envido (umbral razonable)
+	var acepta_envido = envido_muerte >= 25
+	_on_ai_responde_envido(acepta_envido)
 
 func _on_ui_truco() -> void:
 	# Intentar cantar truco
