@@ -46,7 +46,7 @@ script = ExtResource("8_strategy")
 [node name="AIDecision" type="Node" parent="AIMuerte" unique_id=1213709422]
 script = ExtResource("9_decision")
 
-[node name="TrucoUI" type="Node" parent="." unique_id=1326515175 node_paths=PackedStringArray("contenedor_cartas_jugador", "contenedor_cartas_muerte", "posicion_mesa_jugador", "posicion_mesa_muerte", "lbl_puntos_jugador", "lbl_puntos_muerte", "lbl_mensaje", "lbl_resultado_ronda", "btn_envido", "btn_truco", "btn_irse", "contenedor_respuestas", "btn_quiero", "btn_no_quiero", "btn_contra_envido", "btn_real_envido", "btn_falta_envido", "contenedor_contra_envido")]
+[node name="TrucoUI" type="Node" parent="." unique_id=1326515175 node_paths=PackedStringArray("contenedor_cartas_jugador", "contenedor_cartas_muerte", "posicion_mesa_jugador", "posicion_mesa_muerte", "lbl_puntos_jugador", "lbl_puntos_muerte", "lbl_mensaje", "lbl_resultado_ronda", "btn_envido", "btn_truco", "btn_irse", "contenedor_respuestas", "btn_quiero", "btn_no_quiero", "btn_contra_envido", "btn_real_envido", "btn_falta_envido", "contenedor_contra_envido", "btn_retruco", "btn_vale_cuatro", "contenedor_contra_truco")]
 script = ExtResource("6_ui")
 contenedor_cartas_jugador = NodePath("../AreaJugador/ManoContainer")
 contenedor_cartas_muerte = NodePath("../AreaMuerte/ManoMuerteContainer")
@@ -66,6 +66,9 @@ btn_contra_envido = NodePath("../HUD/RespuestasContainer/VBox/HBoxEnvidos/BtnEnv
 btn_real_envido = NodePath("../HUD/RespuestasContainer/VBox/HBoxEnvidos/BtnReal")
 btn_falta_envido = NodePath("../HUD/RespuestasContainer/VBox/HBoxEnvidos/BtnFalta")
 contenedor_contra_envido = NodePath("../HUD/RespuestasContainer/VBox/HBoxEnvidos")
+btn_retruco = NodePath("../HUD/RespuestasContainer/VBox/HBoxTruco/BtnRetruco")
+btn_vale_cuatro = NodePath("../HUD/RespuestasContainer/VBox/HBoxTruco/BtnValeCuatro")
+contenedor_contra_truco = NodePath("../HUD/RespuestasContainer/VBox/HBoxTruco")
 
 [node name="--- VISUALS ---" type="CanvasLayer" parent="." unique_id=1463147469]
 layer = -1
@@ -370,3 +373,17 @@ text = "Real"
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Falta"
+
+[node name="HBoxTruco" type="HBoxContainer" parent="HUD/RespuestasContainer/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="BtnRetruco" type="Button" parent="HUD/RespuestasContainer/VBox/HBoxTruco"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Retruco"
+
+[node name="BtnValeCuatro" type="Button" parent="HUD/RespuestasContainer/VBox/HBoxTruco"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Vale 4"

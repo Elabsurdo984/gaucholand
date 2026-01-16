@@ -59,6 +59,7 @@ func conectar_senales() -> void:
 	ui.respuesta_envido.connect(_on_player_responde_envido)
 	ui.respuesta_truco.connect(_on_player_responde_truco)
 	ui.contra_envido.connect(_on_player_contra_envido)
+	ui.contra_truco.connect(_on_player_contra_truco)
 	
 	# Conexiones de Sistemas
 	ai.accion_tomada.connect(_on_ai_accion)
@@ -269,7 +270,7 @@ func _on_ai_accion(accion: Dictionary) -> void:
 		"cantar_truco":
 			betting.cantar_truco("muerte")
 			estado_respuesta_pendiente = "truco"
-			ui.mostrar_dialogo_respuesta("truco")
+			ui.mostrar_dialogo_respuesta("truco", betting.nivel_actual)
 		"irse_al_mazo":
 			state.agregar_puntos_jugador(betting.puntos_en_juego)
 			finalizar_mano()
@@ -465,6 +466,63 @@ func _on_player_contra_envido(tipo_envido: int) -> void:
 
 	# Continuar con el juego
 	iniciar_turno()
+
+func _on_player_contra_truco(nivel: int) -> void:
+	if estado_respuesta_pendiente != "truco": return
+
+	# Limpiar estado de respuesta pendiente
+	estado_respuesta_pendiente = ""
+	ui.ocultar_respuestas()
+
+	# Determinar nombre del contra-canto y cantar
+	var nombre_canto = ""
+	var exito = false
+	match nivel:
+		TrucoBetting.NivelApuesta.RETRUCO:
+			nombre_canto = "Retruco"
+			exito = betting.cantar_retruco("jugador")
+		TrucoBetting.NivelApuesta.VALE_CUATRO:
+			nombre_canto = "Vale Cuatro"
+			exito = betting.cantar_vale_cuatro("jugador")
+
+	if not exito:
+		ui.mostrar_mensaje("No puedes cantar eso ahora")
+		iniciar_turno()
+		return
+
+	ui.mostrar_mensaje("¡%s!" % nombre_canto, 2.5)
+	await get_tree().create_timer(2.5).timeout
+
+	# La muerte decide si acepta el contra-canto
+	var fuerza_muerte = ai.decision.calcular_fuerza_mano(state.cartas_muerte)
+	# Umbral más alto para aceptar contra-cantos
+	var umbral = 0.55 if nivel == TrucoBetting.NivelApuesta.RETRUCO else 0.6
+	var acepta = fuerza_muerte >= umbral
+
+	if acepta:
+		betting.aceptar_apuesta()
+		ui.mostrar_mensaje("La Muerte dijo: ¡Quiero!", 2.5)
+		await get_tree().create_timer(2.5).timeout
+		# Continuar jugando
+		iniciar_turno()
+	else:
+		ui.mostrar_mensaje("La Muerte dijo: No quiero", 2.5)
+		await get_tree().create_timer(2.5).timeout
+		# El jugador gana los puntos del nivel anterior
+		var puntos_ganados = betting.rechazar_apuesta()
+		state.agregar_puntos_jugador(puntos_ganados)
+		ui.actualizar_puntos(state.puntos_jugador, state.puntos_muerte)
+		ui.mostrar_mensaje("Ganaste %d punto%s" % [puntos_ganados, "s" if puntos_ganados > 1 else ""], 3.5)
+		await get_tree().create_timer(3.5).timeout
+
+		# Verificar victoria
+		if state.puntos_jugador >= _puntos_ganar:
+			ui.mostrar_mensaje("¡VICTORIA! Derrotaste a La Muerte", 6.0)
+			await get_tree().create_timer(6.0).timeout
+			get_tree().change_scene_to_file("res://scenes/cinematics/jugador_victoria/jugador_victoria.tscn")
+			return
+
+		comenzar_nueva_mano()
 
 # --- RESPUESTAS DE IA (Simuladas por ahora) ---
 func _on_ai_responde_envido(acepta: bool) -> void:

@@ -11,6 +11,7 @@ signal carta_jugada(carta: Carta)
 signal respuesta_envido(acepta: bool)
 signal respuesta_truco(acepta: bool)
 signal contra_envido(tipo: int)  # EnvidoSystem.TipoEnvido
+signal contra_truco(tipo: int)  # TrucoBetting.NivelApuesta
 
 # ============================================================
 # REFERENCIAS UI (Asignar en Editor)
@@ -40,6 +41,9 @@ signal contra_envido(tipo: int)  # EnvidoSystem.TipoEnvido
 @export var btn_real_envido: Button
 @export var btn_falta_envido: Button
 @export var contenedor_contra_envido: Control
+@export var btn_retruco: Button
+@export var btn_vale_cuatro: Button
+@export var contenedor_contra_truco: Control
 
 # ============================================================
 # VARIABLES
@@ -63,6 +67,10 @@ func _ready() -> void:
 	if btn_contra_envido: btn_contra_envido.pressed.connect(func(): _contra_envido(EnvidoSystem.TipoEnvido.ENVIDO_ENVIDO))
 	if btn_real_envido: btn_real_envido.pressed.connect(func(): _contra_envido(EnvidoSystem.TipoEnvido.REAL_ENVIDO))
 	if btn_falta_envido: btn_falta_envido.pressed.connect(func(): _contra_envido(EnvidoSystem.TipoEnvido.FALTA_ENVIDO))
+
+	# Conectar botones de contra-truco
+	if btn_retruco: btn_retruco.pressed.connect(func(): _contra_truco(TrucoBetting.NivelApuesta.RETRUCO))
+	if btn_vale_cuatro: btn_vale_cuatro.pressed.connect(func(): _contra_truco(TrucoBetting.NivelApuesta.VALE_CUATRO))
 
 	ocultar_respuestas()
 	lbl_mensaje.text = ""
@@ -208,7 +216,7 @@ func limpiar_mesa() -> void:
 		if child is Carta:
 			child.queue_free()
 
-func mostrar_dialogo_respuesta(tipo: String) -> void:
+func mostrar_dialogo_respuesta(tipo: String, nivel_apuesta: int = 0) -> void:
 	_respondiendo_a = tipo
 	if contenedor_respuestas:
 		contenedor_respuestas.visible = true
@@ -217,6 +225,16 @@ func mostrar_dialogo_respuesta(tipo: String) -> void:
 	# Mostrar botones de contra-envido solo si es respuesta a envido
 	if contenedor_contra_envido:
 		contenedor_contra_envido.visible = (tipo == "envido")
+
+	# Mostrar botones de contra-truco según el nivel actual
+	if contenedor_contra_truco:
+		contenedor_contra_truco.visible = (tipo == "truco")
+		if tipo == "truco":
+			# Habilitar/deshabilitar según nivel
+			if btn_retruco:
+				btn_retruco.visible = (nivel_apuesta == TrucoBetting.NivelApuesta.TRUCO)
+			if btn_vale_cuatro:
+				btn_vale_cuatro.visible = (nivel_apuesta == TrucoBetting.NivelApuesta.RETRUCO)
 
 func ocultar_respuestas() -> void:
 	_respondiendo_a = ""
@@ -255,9 +273,13 @@ func _responder(acepta: bool) -> void:
 	# Emitir la señal correcta según lo que se estaba respondiendo
 	if tipo == "envido":
 		respuesta_envido.emit(acepta)
-	elif tipo == "truco":
+	elif tipo == "truco" or tipo == "retruco" or tipo == "vale cuatro":
 		respuesta_truco.emit(acepta)
 
 func _contra_envido(tipo_envido: int) -> void:
 	ocultar_respuestas()
 	contra_envido.emit(tipo_envido)
+
+func _contra_truco(nivel: int) -> void:
+	ocultar_respuestas()
+	contra_truco.emit(nivel)
