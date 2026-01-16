@@ -560,10 +560,22 @@ func _on_ai_responde_truco(acepta: bool) -> void:
 		# Rehabilitar controles y continuar jugando
 		ui.habilitar_controles(state, betting)
 	else:
-		betting.rechazar_apuesta()
-		ui.mostrar_mensaje("La Muerte dijo: No quiero", 3.0)
+		var puntos_ganados = betting.rechazar_apuesta()
+		ui.mostrar_mensaje("La Muerte dijo: No quiero", 2.5)
+		await get_tree().create_timer(2.5).timeout
+		state.agregar_puntos_jugador(puntos_ganados)
+		ui.actualizar_puntos(state.puntos_jugador, state.puntos_muerte)
+		ui.mostrar_mensaje("Ganaste %d punto%s" % [puntos_ganados, "s" if puntos_ganados > 1 else ""], 3.0)
 		await get_tree().create_timer(3.0).timeout
-		finalizar_mano()
+
+		# Verificar victoria
+		if state.puntos_jugador >= _puntos_ganar:
+			ui.mostrar_mensaje("¡VICTORIA! Derrotaste a La Muerte", 6.0)
+			await get_tree().create_timer(6.0).timeout
+			get_tree().change_scene_to_file("res://scenes/cinematics/jugador_victoria/jugador_victoria.tscn")
+			return
+
+		comenzar_nueva_mano()
 
 func _on_envido_resuelto(ganador: String, puntos: int) -> void:
 	if ganador == "jugador":
