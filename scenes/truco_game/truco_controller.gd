@@ -52,6 +52,7 @@ func conectar_senales() -> void:
 	# Conexiones de UI (Botones y Cartas)
 	ui.boton_envido_presionado.connect(_on_ui_envido)
 	ui.boton_truco_presionado.connect(_on_ui_truco)
+	ui.boton_irse_presionado.connect(_on_ui_irse_al_mazo)
 	ui.carta_jugada.connect(_on_player_jugar_carta)
 	
 	# Conexiones de Respuesta UI
@@ -315,6 +316,29 @@ func _on_ui_truco() -> void:
 
 	# La IA decide si acepta o no (por ahora siempre acepta)
 	_on_ai_responde_truco(true)
+
+func _on_ui_irse_al_mazo() -> void:
+	# El jugador se rinde y la muerte gana los puntos en juego
+	ui.deshabilitar_controles()
+	ui.mostrar_mensaje("Te fuiste al mazo...", 2.5)
+	await get_tree().create_timer(2.5).timeout
+
+	# La muerte gana los puntos en juego (mínimo 1)
+	var puntos = max(betting.puntos_en_juego, 1)
+	state.agregar_puntos_muerte(puntos)
+	ui.actualizar_puntos(state.puntos_jugador, state.puntos_muerte)
+	ui.mostrar_mensaje("La Muerte gana %d punto%s" % [puntos, "s" if puntos > 1 else ""], 3.0)
+	await get_tree().create_timer(3.0).timeout
+
+	# Verificar si la muerte ganó la partida
+	if state.puntos_muerte >= _puntos_ganar:
+		ui.mostrar_mensaje("DERROTA... La Muerte te venció", 3.0)
+		await get_tree().create_timer(3.0).timeout
+		get_tree().change_scene_to_file("res://scenes/cinematics/muerte_victoria/muerte_victoria.tscn")
+		return
+
+	# Comenzar nueva mano
+	comenzar_nueva_mano()
 
 # --- RESPUESTAS DEL JUGADOR ---
 func _on_player_responde_envido(acepta: bool) -> void:
