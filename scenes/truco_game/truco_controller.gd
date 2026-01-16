@@ -171,6 +171,10 @@ func procesar_jugada(quien: String, carta) -> void:
 		if state.carta_jugada_jugador != null:
 			await get_tree().create_timer(1.5).timeout
 			evaluar_ronda()
+		else:
+			# Es el turno del jugador, habilitar controles
+			await get_tree().create_timer(0.5).timeout
+			iniciar_turno()
 
 func evaluar_ronda() -> void:
 	var ganador = rules.determinar_ganador_ronda(state.carta_jugada_jugador, state.carta_jugada_muerte)
