@@ -10,15 +10,19 @@ var puntos_por_tipo = {
 	TipoEnvido.ENVIDO: 2,
 	TipoEnvido.ENVIDO_ENVIDO: 2,
 	TipoEnvido.REAL_ENVIDO: 3,
-	TipoEnvido.FALTA_ENVIDO: 0
+	TipoEnvido.FALTA_ENVIDO: 0  # Se calcula dinámicamente
 }
 
 var puntos_acumulados: int = 0
 var tipo_actual: TipoEnvido = TipoEnvido.ENVIDO
+var es_falta_envido: bool = false
 
 func cantar_envido(tipo: TipoEnvido, quien: String) -> void:
 	tipo_actual = tipo
-	puntos_acumulados += puntos_por_tipo[tipo]
+	if tipo == TipoEnvido.FALTA_ENVIDO:
+		es_falta_envido = true
+	else:
+		puntos_acumulados += puntos_por_tipo[tipo]
 	envido_cantado.emit(quien, TipoEnvido.keys()[tipo])
 
 func calcular_envido(cartas: Array) -> int:
@@ -43,20 +47,39 @@ func calcular_envido(cartas: Array) -> int:
 				
 	return mejor_envido
 
-func resolver_envido(puntos_jugador: int, puntos_muerte: int, es_mano_jugador: bool = true) -> Dictionary:
+func resolver_envido(puntos_envido_jugador: int, puntos_envido_muerte: int, es_mano_jugador: bool = true, puntos_partida_jugador: int = 0, puntos_partida_muerte: int = 0, puntos_para_ganar: int = 15) -> Dictionary:
 	var ganador = ""
-	if puntos_jugador > puntos_muerte:
+	if puntos_envido_jugador > puntos_envido_muerte:
 		ganador = "jugador"
-	elif puntos_muerte > puntos_jugador:
+	elif puntos_envido_muerte > puntos_envido_jugador:
 		ganador = "muerte"
 	else:
 		ganador = "jugador" if es_mano_jugador else "muerte"
-	
+
 	var puntos = puntos_acumulados
-	if puntos == 0: puntos = 2 
+
+	# Si es falta envido, calcular puntos que faltan para ganar
+	if es_falta_envido:
+		# El que va perdiendo define los puntos (lo que le falta para ganar)
+		if puntos_partida_jugador >= puntos_partida_muerte:
+			# La muerte va perdiendo o empatados, se juega por lo que le falta a la muerte
+			puntos = puntos_para_ganar - puntos_partida_muerte
+		else:
+			# El jugador va perdiendo, se juega por lo que le falta al jugador
+			puntos = puntos_para_ganar - puntos_partida_jugador
+		# Mínimo 1 punto
+		if puntos < 1:
+			puntos = 1
+	elif puntos == 0:
+		puntos = 2
 
 	envido_resuelto.emit(ganador, puntos)
 	return { "ganador": ganador, "puntos": puntos }
+
+func resetear() -> void:
+	puntos_acumulados = 0
+	tipo_actual = TipoEnvido.ENVIDO
+	es_falta_envido = false
 
 func _get_envido_val(c) -> int:
 	if c is Dictionary:

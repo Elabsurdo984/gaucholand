@@ -73,7 +73,7 @@ func conectar_senales() -> void:
 func comenzar_nueva_mano() -> void:
 	state.resetear_mano()
 	betting.resetear_apuestas()
-	envido_sys.puntos_acumulados = 0
+	envido_sys.resetear()
 	estado_respuesta_pendiente = ""
 	
 	# Lógica de Mazo
@@ -371,7 +371,7 @@ func _on_player_responde_envido(acepta: bool) -> void:
 		ui.mostrar_mensaje("Envido de La Muerte: %d" % pts_muerte, 3.5)
 		await get_tree().create_timer(3.5).timeout
 
-		envido_sys.resolver_envido(pts_jug, pts_muerte)
+		envido_sys.resolver_envido(pts_jug, pts_muerte, true, state.puntos_jugador, state.puntos_muerte, _puntos_ganar)
 		await get_tree().create_timer(2.0).timeout
 	else:
 		ui.mostrar_mensaje("No quiero", 2.5)
@@ -451,14 +451,16 @@ func _on_player_contra_envido(tipo_envido: int) -> void:
 		ui.mostrar_mensaje("Envido de La Muerte: %d" % pts_muerte, 3.5)
 		await get_tree().create_timer(3.5).timeout
 
-		envido_sys.resolver_envido(pts_jug, pts_muerte)
+		envido_sys.resolver_envido(pts_jug, pts_muerte, true, state.puntos_jugador, state.puntos_muerte, _puntos_ganar)
 		await get_tree().create_timer(2.0).timeout
 	else:
 		ui.mostrar_mensaje("La Muerte dijo: No quiero", 2.5)
 		await get_tree().create_timer(2.5).timeout
 		# El jugador gana los puntos acumulados hasta antes del contra-canto
-		var puntos_ganados = envido_sys.puntos_acumulados - envido_sys.puntos_por_tipo[tipo_envido]
-		if puntos_ganados < 1: puntos_ganados = 1
+		var puntos_ganados = 1
+		if not envido_sys.es_falta_envido:
+			puntos_ganados = envido_sys.puntos_acumulados - envido_sys.puntos_por_tipo[tipo_envido]
+			if puntos_ganados < 1: puntos_ganados = 1
 		state.agregar_puntos_jugador(puntos_ganados)
 		ui.actualizar_puntos(state.puntos_jugador, state.puntos_muerte)
 		ui.mostrar_mensaje("Ganaste %d punto%s" % [puntos_ganados, "s" if puntos_ganados > 1 else ""], 3.5)
@@ -540,13 +542,18 @@ func _on_ai_responde_envido(acepta: bool) -> void:
 		ui.mostrar_mensaje("Envido de La Muerte: %d" % pts_muerte, 3.5)
 		await get_tree().create_timer(3.5).timeout
 
-		envido_sys.resolver_envido(pts_jug, pts_muerte)
+		envido_sys.resolver_envido(pts_jug, pts_muerte, true, state.puntos_jugador, state.puntos_muerte, _puntos_ganar)
 	else:
 		ui.mostrar_mensaje("La Muerte dijo: No quiero", 2.5)
 		await get_tree().create_timer(2.5).timeout
-		state.agregar_puntos_jugador(1)
+		# Si rechaza envido simple, gana 1 punto
+		# Si rechaza falta envido, gana los puntos acumulados antes del falta
+		var puntos_ganados = 1
+		if envido_sys.puntos_acumulados > 0:
+			puntos_ganados = envido_sys.puntos_acumulados
+		state.agregar_puntos_jugador(puntos_ganados)
 		ui.actualizar_puntos(state.puntos_jugador, state.puntos_muerte)
-		ui.mostrar_mensaje("Ganaste 1 punto por el envido rechazado", 3.5)
+		ui.mostrar_mensaje("Ganaste %d punto%s" % [puntos_ganados, "s" if puntos_ganados > 1 else ""], 3.5)
 
 	# Rehabilitar controles después de resolver el envido
 	await get_tree().create_timer(2.0).timeout
