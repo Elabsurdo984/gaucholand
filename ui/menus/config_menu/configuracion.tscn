@@ -14,7 +14,7 @@ corner_radius_top_right = 15
 corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
 
-[node name="Configuracion" type="Control" node_paths=PackedStringArray("slider_musica", "label_musica", "slider_efectos", "label_efectos", "check_pantalla_completa", "btn_volver", "btn_restablecer")]
+[node name="Configuracion" type="Control" node_paths=PackedStringArray("slider_musica", "label_valor_musica", "slider_efectos", "label_valor_efectos", "check_pantalla_completa", "btn_volver", "btn_restablecer")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,9 +23,9 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_5mfs0")
 slider_musica = NodePath("ScrollContainer/VBoxContainer/AudioPanel/MarginContainer/VBox/MusicaControl/SliderMusica")
-label_musica = NodePath("ScrollContainer/VBoxContainer/AudioPanel/MarginContainer/VBox/MusicaControl/HBox/Label")
+label_valor_musica = NodePath("ScrollContainer/VBoxContainer/AudioPanel/MarginContainer/VBox/MusicaControl/LabelValor")
 slider_efectos = NodePath("ScrollContainer/VBoxContainer/AudioPanel/MarginContainer/VBox/EfectosControl/SliderEfectos")
-label_efectos = NodePath("ScrollContainer/VBoxContainer/AudioPanel/MarginContainer/VBox/EfectosControl/HBox/Label")
+label_valor_efectos = NodePath("ScrollContainer/VBoxContainer/AudioPanel/MarginContainer/VBox/EfectosControl/LabelValor")
 check_pantalla_completa = NodePath("ScrollContainer/VBoxContainer/VideoPanel/MarginContainer/VBox/PantallaCompleta/CheckPantallaCompleta")
 btn_volver = NodePath("BtnVolver")
 btn_restablecer = NodePath("ScrollContainer/VBoxContainer/BtnRestablecer")

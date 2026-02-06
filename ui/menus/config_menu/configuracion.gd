@@ -4,9 +4,9 @@ extends Control
 
 #region REFERENCIAS
 @export var slider_musica: HSlider
-@export var label_musica: Label
+@export var label_valor_musica: Label  # Label que muestra el porcentaje
 @export var slider_efectos: HSlider
-@export var label_efectos: Label
+@export var label_valor_efectos: Label  # Label que muestra el porcentaje
 @export var check_pantalla_completa: CheckBox
 @export var btn_volver: Button
 @export var btn_restablecer: Button
@@ -84,16 +84,16 @@ func aplicar_valores_defecto():
 		check_pantalla_completa.button_pressed = DEFAULT_PANTALLA_COMPLETA
 
 func actualizar_labels():
-	if label_musica and slider_musica:
-		label_musica.text = str(int(slider_musica.value)) + "%"
-	if label_efectos and slider_efectos:
-		label_efectos.text = str(int(slider_efectos.value)) + "%"
+	if label_valor_musica and slider_musica:
+		label_valor_musica.text = str(int(slider_musica.value)) + "%"
+	if label_valor_efectos and slider_efectos:
+		label_valor_efectos.text = str(int(slider_efectos.value)) + "%"
 #endregion
 
 #region CALLBACKS
 func _on_musica_changed(value: float):
-	if label_musica:
-		label_musica.text = str(int(value)) + "%"
+	if label_valor_musica:
+		label_valor_musica.text = str(int(value)) + "%"
 
 	# Aplicar volumen al bus de audio
 	var db = linear_to_db(value / 100.0)
@@ -102,8 +102,8 @@ func _on_musica_changed(value: float):
 	guardar_configuracion()
 
 func _on_efectos_changed(value: float):
-	if label_efectos:
-		label_efectos.text = str(int(value)) + "%"
+	if label_valor_efectos:
+		label_valor_efectos.text = str(int(value)) + "%"
 
 	# TODO: Aplicar volumen al bus de efectos cuando exista
 	# var db = linear_to_db(value / 100.0)
