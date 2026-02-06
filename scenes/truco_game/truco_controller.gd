@@ -321,9 +321,7 @@ func _on_ui_truco() -> void:
 	await get_tree().create_timer(2.5).timeout
 
 	# La IA evalúa la fuerza de su mano y decide si acepta
-	var fuerza_muerte = ai.decision.calcular_fuerza_mano(state.cartas_muerte)
-	# Acepta si tiene fuerza >= 0.5 (mano decente)
-	var acepta_truco = fuerza_muerte >= 0.5
+	var acepta_truco = _ai_debe_aceptar_truco()
 	_on_ai_responde_truco(acepta_truco)
 
 func _on_ui_irse_al_mazo() -> void:
@@ -496,10 +494,7 @@ func _on_player_contra_truco(nivel: int) -> void:
 	await get_tree().create_timer(2.5).timeout
 
 	# La muerte decide si acepta el contra-canto
-	var fuerza_muerte = ai.decision.calcular_fuerza_mano(state.cartas_muerte)
-	# Umbral más alto para aceptar contra-cantos
-	var umbral = 0.55 if nivel == TrucoBetting.NivelApuesta.RETRUCO else 0.6
-	var acepta = fuerza_muerte >= umbral
+	var acepta = _ai_debe_aceptar_contra_truco(nivel)
 
 	if acepta:
 		betting.aceptar_apuesta()
@@ -596,6 +591,117 @@ func _on_envido_resuelto(ganador: String, puntos: int) -> void:
 
 func _on_apuesta_aceptada() -> void: pass
 func _on_apuesta_rechazada() -> void: pass
+
+# ============================================================
+# AI DECISION HELPERS
+# ============================================================
+
+## Decide si la IA debe aceptar el truco basándose en múltiples factores
+func _ai_debe_aceptar_truco() -> bool:
+	# Calcular fuerza de la mano actual
+	var fuerza_muerte = ai.decision.calcular_fuerza_mano(state.cartas_muerte)
+
+	# Ajustar umbral según el contexto de la partida
+	var umbral_base = 0.35  # Umbral más bajo que el 0.5 original
+
+	# Factor 1: Ajustar según ronda actual (en rondas posteriores, las cartas restantes son menos)
+	var ajuste_ronda = 0.0
+	match state.ronda_actual:
+		1: ajuste_ronda = 0.15  # Primera ronda: ser más exigente (total: 0.5)
+		2: ajuste_ronda = 0.05  # Segunda ronda: menos exigente (total: 0.4)
+		3: ajuste_ronda = -0.05 # Tercera ronda: aún menos exigente (total: 0.3)
+
+	# Factor 2: Considerar resultados de rondas anteriores
+	var rondas_ganadas_muerte = 0
+	var rondas_ganadas_jugador = 0
+	for resultado in state.resultados_rondas:
+		if resultado == TrucoRules.GANADOR_MUERTE:
+			rondas_ganadas_muerte += 1
+		elif resultado == TrucoRules.GANADOR_JUGADOR:
+			rondas_ganadas_jugador += 1
+
+	# Si la muerte va ganando, puede ser más conservadora
+	if rondas_ganadas_muerte > rondas_ganadas_jugador:
+		ajuste_ronda += 0.1
+	# Si la muerte va perdiendo, debe arriesgar más
+	elif rondas_ganadas_muerte < rondas_ganadas_jugador:
+		ajuste_ronda -= 0.15
+
+	# Factor 3: Considerar puntos en juego vs puntos faltantes
+	var puntos_para_ganar_muerte = _puntos_ganar - state.puntos_muerte
+	var puntos_para_ganar_jugador = _puntos_ganar - state.puntos_jugador
+
+	# Si la muerte está cerca de ganar, ser más agresiva
+	if puntos_para_ganar_muerte <= 3:
+		ajuste_ronda -= 0.1
+
+	# Si el jugador está cerca de ganar, no regalar puntos fácilmente
+	if puntos_para_ganar_jugador <= 3:
+		ajuste_ronda += 0.05
+
+	var umbral_final = umbral_base + ajuste_ronda
+
+	# Imprimir información de debug
+	if OS.is_debug_build():
+		print("🤖 IA evalúa truco - Fuerza: %.2f | Umbral: %.2f | Ronda: %d | Score M:%d J:%d" %
+			[fuerza_muerte, umbral_final, state.ronda_actual, rondas_ganadas_muerte, rondas_ganadas_jugador])
+
+	return fuerza_muerte >= umbral_final
+
+## Decide si la IA debe aceptar un contra-truco (Retruco o Vale Cuatro)
+func _ai_debe_aceptar_contra_truco(nivel: int) -> bool:
+	# Calcular fuerza de la mano actual
+	var fuerza_muerte = ai.decision.calcular_fuerza_mano(state.cartas_muerte)
+
+	# Umbral base más alto para contra-cantos (mayor riesgo)
+	var umbral_base = 0.40
+	if nivel == TrucoBetting.NivelApuesta.VALE_CUATRO:
+		umbral_base = 0.45  # Vale Cuatro es aún más riesgoso
+
+	# Factor 1: Ajustar según ronda actual
+	var ajuste_ronda = 0.0
+	match state.ronda_actual:
+		1: ajuste_ronda = 0.15
+		2: ajuste_ronda = 0.05
+		3: ajuste_ronda = -0.05
+
+	# Factor 2: Considerar resultados de rondas anteriores
+	var rondas_ganadas_muerte = 0
+	var rondas_ganadas_jugador = 0
+	for resultado in state.resultados_rondas:
+		if resultado == TrucoRules.GANADOR_MUERTE:
+			rondas_ganadas_muerte += 1
+		elif resultado == TrucoRules.GANADOR_JUGADOR:
+			rondas_ganadas_jugador += 1
+
+	# Si va ganando, ser más conservadora (no arriesgar tanto)
+	if rondas_ganadas_muerte > rondas_ganadas_jugador:
+		ajuste_ronda += 0.15
+	# Si va perdiendo, arriesgar más
+	elif rondas_ganadas_muerte < rondas_ganadas_jugador:
+		ajuste_ronda -= 0.10
+
+	# Factor 3: Considerar lo cerca que está de ganar/perder
+	var puntos_para_ganar_muerte = _puntos_ganar - state.puntos_muerte
+	var puntos_para_ganar_jugador = _puntos_ganar - state.puntos_jugador
+
+	# Si está muy cerca de ganar, ser más conservadora
+	if puntos_para_ganar_muerte <= 2:
+		ajuste_ronda += 0.10
+
+	# Si el jugador está muy cerca de ganar, no arriesgar tanto
+	if puntos_para_ganar_jugador <= 2:
+		ajuste_ronda += 0.10
+
+	var umbral_final = umbral_base + ajuste_ronda
+
+	# Debug info
+	if OS.is_debug_build():
+		var nivel_nombre = "Retruco" if nivel == TrucoBetting.NivelApuesta.RETRUCO else "Vale Cuatro"
+		print("🤖 IA evalúa %s - Fuerza: %.2f | Umbral: %.2f | Ronda: %d" %
+			[nivel_nombre, fuerza_muerte, umbral_final, state.ronda_actual])
+
+	return fuerza_muerte >= umbral_final
 
 # ============================================================
 # DEBUG COMMANDS (Solo en modo debug)
