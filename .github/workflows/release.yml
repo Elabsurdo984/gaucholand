@@ -1,0 +1,88 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*' # Triggers on tags like v0.9.1, v1.0.0, etc.
+
+env:
+  GODOT_VERSION: 4.6
+  EXPORT_NAME: la_odisea_del_gaucho
+
+jobs:
+  export:
+    name: Export Game
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    container:
+      image: barichello/godot-ci:4.6
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Setup Export Templates
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable || true
+
+      - name: Create Build Directory
+        run: mkdir -v -p build
+
+      - name: Import Project
+        run: |
+          echo "Importing project..."
+          godot --headless --editor --quit
+          echo "Import completed"
+
+      - name: Export Windows
+        run: |
+          echo "Exporting for Windows..."
+          godot --headless --export-release "Windows Desktop"
+          mv build/la_odisea_del_gaucho-win.zip build/${EXPORT_NAME}-windows.zip
+
+      - name: Export Linux
+        run: |
+          echo "Exporting for Linux..."
+          godot --headless --export-release "Linux"
+          mv build/la_odisea_del_gaucho-linux.zip build/${EXPORT_NAME}-linux.zip
+
+      - name: Export macOS
+        run: |
+          echo "Exporting for macOS..."
+          godot --headless --export-release "macOS"
+          mv build/la_odisea_del_gaucho_mac.zip build/${EXPORT_NAME}-macos.zip
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            build/${{ env.EXPORT_NAME }}-windows.zip
+            build/${{ env.EXPORT_NAME }}-linux.zip
+            build/${{ env.EXPORT_NAME }}-macos.zip
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          body: |
+            ## La Odisea del Gaucho - ${{ github.ref_name }}
+
+            ### Descargas
+            - **Windows**: `${{ env.EXPORT_NAME }}-windows.zip`
+            - **Linux**: `${{ env.EXPORT_NAME }}-linux.zip`
+            - **macOS**: `${{ env.EXPORT_NAME }}-macos.zip`
+
+            ### Instrucciones
+            1. Descarga el archivo ZIP de tu plataforma
+            2. Extrae el contenido
+            3. Ejecuta el juego:
+               - **Windows**: Doble click en `${{ env.EXPORT_NAME }}.exe`
+               - **Linux**: Ejecuta `${{ env.EXPORT_NAME }}.x86_64` (puede requerir `chmod +x`)
+               - **macOS**: Abre `${{ env.EXPORT_NAME }}.app`
+
+            ¡Disfruta la aventura gaucha! 🧉
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
